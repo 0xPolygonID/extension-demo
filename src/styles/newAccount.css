@@ -1,0 +1,17 @@
+.create-new-account {
+    padding: 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.create-new-account img {
+    width: 100px;
+}
+
+.create-new-account .button-section{
+    margin-top: 30px;
+}
+
+.create-new-account .button-section button{
+    margin: 0 20px;
+}

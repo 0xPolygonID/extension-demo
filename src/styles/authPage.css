@@ -1,0 +1,32 @@
+.auth-wrapper {
+    padding: 20px;
+    text-align: left;
+}
+.auth-wrapper h2{
+    text-align: center;
+}
+.auth-wrapper .reason,
+.auth-wrapper .from{
+    font-size: 12px;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden;
+}
+.auth-wrapper img{
+    width: 100px
+}
+
+.auth-wrapper .button-section {
+    text-align: center;
+    margin-top: 30px;
+}
+.auth-wrapper .button-section button{
+    margin: 0 30px;
+}
+
+.auth-wrapper .progress{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

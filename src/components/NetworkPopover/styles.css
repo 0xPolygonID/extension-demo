@@ -1,0 +1,40 @@
+.network-dropdown-header{
+    padding: 16px 0px;
+}
+
+.network-dropdown-title {
+    font-size: 1.125rem;
+    font-family: "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 140%;
+    font-style: normal;
+    font-weight: normal;
+    color: #24272a;
+    text-align: center;
+    border-bottom: 1px solid #bbc0c5 ;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+.network-dropdown-content {
+
+}
+
+.network-indicator-item {
+    padding: 16px 40px;
+    font-size: 16px;
+    font-style: normal;
+    cursor: pointer;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    line-height: 20px;
+}
+
+.network-indicator-item:hover{
+    background-color: #f2f4f6;
+    color: #24272a;
+}
+.network-indicator-item .network-check-icon {
+    width: 20px;
+    margin-right: 10px;
+}

@@ -1,0 +1,45 @@
+.welcome-step1 {
+    padding: 5rem 1rem;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.welcome-step1 img {
+    width: 60px;
+    height: 60px;
+}
+
+.welcome-step2,
+.welcome-step3 {
+    padding: 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.welcome-step2 img,
+.welcome-step3 img {
+    width: 100px;
+}
+
+.welcome-step2 .block-wrap {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.welcome-step2 .block-wrap .section{
+    padding: 0.5rem;
+    width: 155px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+.welcome-step2 .block-wrap .section p {
+    padding-bottom: 20px;
+}
+.welcome-step3 .MuiTextField-root.pas-input {
+    padding-bottom: 20px;
+}

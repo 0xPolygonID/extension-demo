@@ -1,0 +1,40 @@
+.app-header {
+  align-items: center;
+  background-color: #f2f4f6;
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  flex: 0 0 auto;
+  padding: 1rem;
+  z-index: 26;
+}
+
+.app-header-contents {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+
+.app-logo{
+  width: 32px;
+}
+.network-section {
+  width: 180px;
+}
+.network-display {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 10px;
+  border-radius: 4px;
+  min-height: 25px;
+  user-select: none;
+}
+.app-header .header-avatar {
+  width: 32px;
+  height: 32px;
+}

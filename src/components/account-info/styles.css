@@ -1,0 +1,122 @@
+.menu-bar {
+	display: grid;
+	grid-template-columns: 30% minmax(30%, 1fr) 30%;
+	-webkit-column-gap: 5px;
+	-moz-column-gap: 5px;
+	column-gap: 5px;
+	padding: 0 8px;
+	border-bottom: 1px solid #d6d9dc;
+	height: 64px;
+}
+
+.account-info {
+	display: flex;
+	justify-content: space-between;
+}
+.connected-status-indicator {
+	display: flex;
+	align-items: center;
+	place-self: center start;
+	background: none;
+	font-size: inherit;
+	padding: 8px;
+	border-radius: 100px;
+	border-style: none;
+}
+
+.connected-status-indicator:hover {
+	 background-color: #f2f3f4;
+ }
+
+.connected-status-indicator .color-indicator {
+	border-radius: 4px;
+	height: 8px;
+	width: 8px;
+	background-color: #29b6af;
+	border: 1px solid #24272a;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.connected-status-indicator__text {
+	font-size: 0.625rem;
+	font-family: "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
+	line-height: 140%;
+	font-style: normal;
+	font-weight: normal;
+	color: #535a61;
+	margin-left: 6px;
+	white-space: nowrap;
+}
+
+.selected-account__clickable {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 4px 0;
+	padding: 6px 1px;
+	border-radius: 10px;
+	cursor: pointer;
+	width: 100%;
+	background-color: unset;
+	border-style: none;
+}
+.selected-account__clickable:hover{
+	background-color: #f2f4f6;
+}
+
+.selected-account__name{
+	font-size: 1rem;
+	font-family: "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
+	line-height: 140%;
+	font-style: normal;
+	width: 100%;
+	font-weight: 700;
+	color: #535a61;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	text-align: center;
+	margin-bottom: 4px;
+}
+
+.selected-account__address {
+	font-size: 0.75rem;
+	font-family: "Euclid Circular B", Roboto, Helvetica, Arial, sans-serif;
+	line-height: 140%;
+	font-style: normal;
+	font-weight: normal;
+	color: #535a61;
+	display: flex;
+	align-items: center;
+}
+
+.selected-account__copy {
+	height: 13px;
+	display: inline-block;
+	-webkit-margin-start: 3px;
+	margin-inline-start: 3px;
+}
+.selected-account {
+	grid-column: 2/span 1;
+	place-self: center stretch;
+}
+
+.account-menu{
+	background: none;
+	font-size: inherit;
+	padding: 0 8px 0 5px;
+	place-self: center end;
+	color: #24272a;
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+}
+.menu-bar__account-options {
+	background: none;
+	font-size: inherit;
+	padding: 0 8px 0 5px;
+	place-self: center end;
+	color: #24272a;
+}
