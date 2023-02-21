@@ -17,7 +17,7 @@ const {
 	VerificationHandlerFunc,
 	PackageManager,
 	EthStateStorage,
-} = window.IdenPolygonIdSdk;
+} = window.PolygonIdSdk;
 
 const { proving } = JWZ;
 
@@ -125,12 +125,12 @@ export async function approveMethod(urlParam) {
 		proofService.generateAuthV2Inputs.bind(proofService),
 		proofService.verifyState.bind(proofService)
 	);
-	let authHandler = new AuthHandler(packageMgr, proofService);
+
+	let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
 
 	let byteEncoder = new TextEncoder()
 	const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
-	const authRes = await authHandler.handleAuthorizationRequest(did, msgBytes);
-	
+	const authRes = await authHandler.handleAuthorizationRequestForGenesisDID(did, msgBytes);
 	console.log(authRes);
 	
 	return await axios.post(`${authRes.authRequest.body.callbackUrl}`,authRes.token)
