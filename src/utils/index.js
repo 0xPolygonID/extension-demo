@@ -16,7 +16,7 @@ const {
 	core,
 	// InMemoryDataSource,
 	EthStateStorage
-} = window.IdenPolygonIdSdk;
+} = window.PolygonIdSdk;
 
 export const createAccount = async () => {
 	const keyStore = new LocalStoragePrivateKeyStore();

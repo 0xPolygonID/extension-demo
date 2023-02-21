@@ -1,4 +1,4 @@
-const { BrowserDataSource, IdentityStorage, CredentialStorage } = window.IdenPolygonIdSdk;
+const { BrowserDataSource, IdentityStorage, CredentialStorage } = window.PolygonIdSdk;
 export class BrowserDataStorage {
 	static instance;
 	static getBrowserDaraSourceInstance() {
