@@ -6,8 +6,8 @@ import Icon from '@mui/material/Icon';
 import TextField from '@mui/material/TextField';
 import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import AddIcon from '@mui/icons-material/Add';
-import { createAccount } from '../utils';
 import { useNavigate } from 'react-router-dom';
+import { WalletService } from '../services/Wallet.service';
 export const Welcome = () => {
 	const navigate = useNavigate();
 	const [step, setStep] = useState('step1');
@@ -19,7 +19,7 @@ export const Welcome = () => {
 		password: '',
 		confirmPassword: ''
 	})
-	const onInputChange = (e,val) => {
+	const onInputChange = (e) => {
 		const { name, value } = e.target;
 		setInput(prev => ({
 			...prev,
@@ -66,14 +66,11 @@ export const Welcome = () => {
 	const handleClickCreate = ()=> {
 		setStep('step3');
 	}
-	function handleClickCreatePassword() {
-		createAccount().then(result=> {
-			localStorage.setItem('accounts',JSON.stringify([{name: 'Polygon Account', did: result.did.toString()}]));
-			window.dispatchEvent(new Event("storage"));
-			// if (chrome.storage)
-			// 	chrome.storage.sync.set({ password: input.password, account: result.did.toString() })
-			navigate('/');
-		});
+	async function handleClickCreatePassword() {
+		const { did } = await WalletService.createWallet();
+		localStorage.setItem('accounts',JSON.stringify([{name: 'Polygon Account', did: did.toString()}]));
+		window.dispatchEvent(new Event("storage"));
+		navigate('/');
 	}
 	return (
 		<div>

@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Home, Welcome, Auth, NewAccount } from './pages';
 import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import { CircuitStorageInstance } from './services';
 
 function App() {
   const [account, setAccount] = useState(null);
+  
+  useEffect(()=>{
+    CircuitStorageInstance.init();
+  },[])
 
   useEffect(()=>{
     window.addEventListener('storage', () => {
