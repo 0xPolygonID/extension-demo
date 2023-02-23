@@ -3,6 +3,7 @@ import { HeaderComponent } from '../components/app-header';
 import { AccountInfo } from '../components/account-info';
 import { CredentialsInfo } from '../components/credentials';
 import { useNavigate } from 'react-router-dom';
+import { CircuitStorageInstance } from '../services';
 export const Home = (props) => {
 	const navigate = useNavigate();
 	let _accounts = props.account.toString();
@@ -19,6 +20,7 @@ export const Home = (props) => {
 			<HeaderComponent account={_accounts} />
 			<AccountInfo account={_accounts}/>
 			<CredentialsInfo account={_accounts}/>
+			<button onClick={()=> {console.log(CircuitStorageInstance.getCircuitStorageInstance())}}> test</button>
 		</div>
 	);
 }

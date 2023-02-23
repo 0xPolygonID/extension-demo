@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { createAccount } from '../utils';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import FullLogo from '../ui/icons/Primary_ Logo.svg';
 import { useNavigate } from 'react-router-dom';
+import { WalletService } from '../services/Wallet.service';
 export const NewAccount = ()=> {
 	const [input, setInput] = useState({
 		account: '',
 	});
 	const navigate = useNavigate();
-	const onInputChange = (e,val) => {
+	const onInputChange = (e) => {
 		const { name, value } = e.target;
 		setInput(prev => ({
 			...prev,
@@ -19,19 +19,19 @@ export const NewAccount = ()=> {
 	function handleClickCancel(){
 		navigate('/');
 	}
-	function handleClickCreateAccount() {
-		createAccount().then(result=> {
-			let existingAccounts = JSON.parse(localStorage.getItem("accounts"));
-			if(existingAccounts !== null || existingAccounts.length !==0){
-				existingAccounts.push({name: input.account, did: result.did.toString()});
-				localStorage.setItem("accounts", JSON.stringify(existingAccounts));
-			}
-			else {
-				localStorage.setItem('accounts',JSON.stringify([{name: input.account, did: result.did.toString()}]));
-			}
-			window.dispatchEvent(new Event("storage"));
-			navigate('/');
-		});
+	async function handleClickCreateAccount() {
+		const { did } = await WalletService.createWallet();
+		let existingAccounts = JSON.parse(localStorage.getItem("accounts"));
+		
+		if(existingAccounts !== null || existingAccounts.length !==0){
+			existingAccounts.push({name: input.account, did: did.toString()});
+			localStorage.setItem("accounts", JSON.stringify(existingAccounts));
+		}
+		else {
+			localStorage.setItem('accounts',JSON.stringify([{name: input.account, did: did.toString()}]));
+		}
+		window.dispatchEvent(new Event("storage"));
+		navigate('/');
 	}
 	return(<div className={'create-new-account'}>
 		<img src={FullLogo} alt={''}/>
