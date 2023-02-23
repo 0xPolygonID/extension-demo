@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { HeaderComponent } from '../components/app-header';
 import { AccountInfo } from '../components/account-info';
+import { CredentialsInfo } from '../components/credentials';
 import { useNavigate } from 'react-router-dom';
 export const Home = (props) => {
 	const navigate = useNavigate();
@@ -14,9 +15,10 @@ export const Home = (props) => {
 	
 	
 	return (
-		 <div>
+		 <div style={{display: 'flex', flexDirection: 'column', height: '100%'}}>
 			<HeaderComponent account={_accounts} />
 			<AccountInfo account={_accounts}/>
+			<CredentialsInfo account={_accounts}/>
 		</div>
 	);
 }

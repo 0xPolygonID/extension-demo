@@ -128,3 +128,6 @@ export const createWallet = async () => {
 	// console.assert(did.toString() === 'did:iden3:polygon:mumbai:wzokvZ6kMoocKJuSbftdZxTD6qvayGpJb3m4FVXth');
 	
 };
+export const hideString = (input, first = 15, second = -10) => {
+	return `${input.slice(0, first)} ... ${input.slice(second)}`;
+};
