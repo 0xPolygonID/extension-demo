@@ -46,7 +46,6 @@ export class WalletService {
 		const seedPhrase = new TextEncoder().encode('seedseedseedseedseedseedseedseed');
 		const identity = await wallet.createIdentity(
 			'http://polygonID.com/',
-			RHS_URL,
 			{
 				method: core.DidMethod.Iden3,
 				blockchain: core.Blockchain.Polygon,
