@@ -16,7 +16,7 @@ function App() {
       console.log("Change to local storage!");
       let accounts = localStorage.getItem('accounts');
       setAccount(accounts);
-    
+      
     })
     let accounts = localStorage.getItem('accounts')
     setAccount(accounts);

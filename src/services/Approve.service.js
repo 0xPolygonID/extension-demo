@@ -24,7 +24,7 @@ export async function approveMethod(urlParam) {
 }
 
 export async function receiveMethod(urlParam) {
-  const { packageMgr, proofService, credWallet, did } =
+  const { packageMgr, credWallet, did } =
     ExtensionService.getExtensionServiceInstance();
   let fetchHandler = new FetchHandler(packageMgr);
 
