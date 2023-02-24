@@ -41,13 +41,13 @@ export class CircuitStorageInstance {
 				verificationKey: auth_j
 			});
 			await this.instanceCS.saveCircuitData('credentialAtomicQueryMTPV2', {
-				circuitId: 'authV2'.toString(),
+				circuitId: 'credentialAtomicQueryMTPV2'.toString(),
 				wasm: mtp_w,
 				provingKey: mtp_z,
 				verificationKey: mtp_j
 			});
 			await this.instanceCS.saveCircuitData('credentialAtomicQuerySigV2', {
-				circuitId: 'authV2'.toString(),
+				circuitId: 'credentialAtomicQuerySigV2'.toString(),
 				wasm: sig_w,
 				provingKey: sig_z,
 				verificationKey: sig_j

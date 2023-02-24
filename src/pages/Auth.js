@@ -51,14 +51,9 @@ export const Auth = ()=> {
 	
 	async function handleClickReceive(){
 		setIsReady(false);
-		let result = await receiveMethod(originalUrl);
-		if(result.code !== 'ERR_NETWORK')
+		let result = await receiveMethod(originalUrl).catch(error=>setError(error));
+		if(result === 'SAVED')
 			navigate('/');
-		else{
-			setError(result.message)
-			setIsReady(true);
-		}
-		
 	}
 	
 	return (
