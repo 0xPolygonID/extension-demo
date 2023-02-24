@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { CredentialRowDetail } from "./credential-row-details";
 import "./styles.css";
 
 export const CredentialDetails = (props) => {
@@ -55,11 +56,3 @@ export const CredentialDetails = (props) => {
   );
 };
 
-const CredentialRowDetail = ({ name, value }) => {
-  return (
-    <div className={"detail-row"}>
-      <div className="name">{name}</div>
-      <div className="value">{value}</div>
-    </div>
-  );
-};

@@ -34,3 +34,34 @@ export async function receiveMethod(urlParam) {
   console.log(credentials);
   await credWallet.saveAll(credentials);
 }
+
+export async function proofMethod(urlParam) {
+  const { packageMgr, proofService, credWallet, did } =
+    ExtensionService.getExtensionServiceInstance();
+  let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
+  let byteEncoder = new TextEncoder();
+  const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
+  const authR = await authHandler.parseAuthorizationRequest(msgBytes);
+
+  const { body } = authR;
+  const { scope = [] } = body;
+
+  if (scope.length > 0) {
+    throw new Error("not support 2 scope");
+  }
+  const [zkpReq] = scope;
+  const [firstCredential] = await credWallet.findByQuery(zkpReq.query);
+  const response = await authHandler.generateAuthorizationResponse(
+    did,
+    0,
+    authR,
+    [
+      {
+        credential: firstCredential,
+        req: zkpReq,
+        credentialSubjectProfileNonce: 0,
+      },
+    ]
+  );
+  console.log("call proof", firstCredential, response);
+}
