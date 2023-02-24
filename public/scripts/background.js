@@ -16,7 +16,7 @@ chrome.runtime.onMessage.addListener(request => {
     // });
     console.log(request.href);
     chrome.windows.create({
-      url: chrome.runtime.getURL(`index.html#/auth?data=${request.href}`),
+      url: chrome.runtime.getURL(`index.html#/auth?i_m=${request.href.split('?i_m=')[1]}`),
       type: "popup",
       focused: true,
       width: 390,

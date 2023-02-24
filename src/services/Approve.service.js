@@ -1,18 +1,20 @@
 import { Base64 } from "js-base64";
 import axios from "axios";
 import { ExtensionService } from "./Extension.service";
+import { LocalStorageServices } from './LocalStorage.services';
 
-const { AuthHandler, FetchHandler } = window.PolygonIdSdk;
-
+const { AuthHandler, FetchHandler, core } = window.PolygonIdSdk;
+const { DID } = core;
 export async function approveMethod(urlParam) {
-  const { packageMgr, proofService, credWallet, did } =
-    ExtensionService.getExtensionServiceInstance();
+  const { packageMgr, proofService, credWallet } = ExtensionService.getExtensionServiceInstance();
+  
   let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
 
   let byteEncoder = new TextEncoder();
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
+  let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
   const authRes = await authHandler.handleAuthorizationRequestForGenesisDID(
-    did,
+    _did,
     msgBytes
   );
   console.log(authRes);
@@ -24,13 +26,12 @@ export async function approveMethod(urlParam) {
 }
 
 export async function receiveMethod(urlParam) {
-  const { packageMgr, credWallet, did } =
-    ExtensionService.getExtensionServiceInstance();
+  const { packageMgr, credWallet } = ExtensionService.getExtensionServiceInstance();
   let fetchHandler = new FetchHandler(packageMgr);
 
   let byteEncoder = new TextEncoder();
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
-  const credentials = await fetchHandler.handleCredentialOffer(did, msgBytes);
+  const credentials = await fetchHandler.handleCredentialOffer(DID.parse(LocalStorageServices.getActiveAccountDid()), msgBytes);
   console.log(credentials);
   await credWallet.saveAll(credentials);
   return 'SAVED';

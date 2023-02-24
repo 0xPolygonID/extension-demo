@@ -43,8 +43,6 @@ export class WalletService {
 		let wallet = new IdentityWallet(kms, dataStorage, credWallet);
 		
 		return {
-			// credential: identity.credential,
-			// did: identity.did,
 			wallet: wallet,
 			credWallet: credWallet,
 			kms: kms,

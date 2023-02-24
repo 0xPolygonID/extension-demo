@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation  } from 'react-router-dom';
 import Logo from '../ui/icons/Logo.svg';
 import FullLogo from '../ui/icons/Primary_ Logo.svg';
 import Button from '@mui/material/Button';
@@ -12,6 +12,7 @@ import { IdentityServices } from '../services/Identity.services';
 
 export const Welcome = () => {
 	const navigate = useNavigate();
+	const { state } = useLocation();
 	const [isIdentityPresent, setIdentity] = useState(false);
 	const [step, setStep] = useState('step1');
 	const [input, setInput] = useState({
@@ -81,10 +82,12 @@ export const Welcome = () => {
 	async function handleClickCreatePassword() {
 		if(!isIdentityPresent) {
 			const identity = await IdentityServices.createIdentity();
-			debugger;
-			localStorage.setItem('accounts',JSON.stringify([{name: DEFAULT_ACCOUNT_NAME, did: identity.did.toString( )}]));
+			localStorage.setItem('accounts',JSON.stringify([{name: DEFAULT_ACCOUNT_NAME, did: identity.did.toString( ), isActive:true}]));
 			window.dispatchEvent(new Event("storage"));
-			navigate('/');
+			if(state)
+				navigate(state);
+			else
+				navigate('/');
 		}
 	}
 	return (

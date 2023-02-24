@@ -7,7 +7,8 @@ export class IdentityServices {
 		if(!this.instanceIS) {
 			const { wallet } = ExtensionService.getExtensionServiceInstance();
 			const seedPhrase = new TextEncoder().encode('seedseedseedseedseedseedseedseed');
-			return  await wallet.createIdentity(
+			
+			let identity = await wallet.createIdentity(
 				'http://polygonID.com/',
 				{
 					method: core.DidMethod.Iden3,
@@ -17,6 +18,8 @@ export class IdentityServices {
 					rhsUrl: RHS_URL
 				}
 			);
+			console.log('!!!!!!!!!!!!!!!!', identity);
+			this.instanceIS = identity;
 		} else
 			return this.instanceIS;
 	}

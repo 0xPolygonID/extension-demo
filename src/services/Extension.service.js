@@ -3,6 +3,7 @@ import { CircuitStorageInstance } from './CircuitStorage';
 import { WalletService } from './Wallet.service';
 import { defaultEthConnectionConfig, INIT } from '../constants';
 
+
 const {
 	ProofService,
 	PlainPacker,
@@ -13,6 +14,7 @@ const {
 	EthStateStorage,
 } = window.PolygonIdSdk;
 
+
 const { proving } = JWZ;
 export class ExtensionService {
 	static instanceES;
@@ -20,7 +22,7 @@ export class ExtensionService {
 		await CircuitStorageInstance.init();
 		
 		let accountInfo = await WalletService.createWallet();
-		const { wallet, credWallet, did } = accountInfo;
+		const { wallet, credWallet, dataStorage } = accountInfo;
 		
 		let circuitStorage = CircuitStorageInstance.getCircuitStorageInstance();
 		
@@ -38,9 +40,9 @@ export class ExtensionService {
 				packageMgr,
 				proofService,
 				credWallet,
-				did,
 				wallet,
-				status: INIT
+				dataStorage,
+				status: INIT,
 			}
 		}
 		console.log('Extension services has been initialized',this.instanceES);

@@ -7,6 +7,7 @@ import FullLogo from "../ui/icons/Primary_ Logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
+import { identitiesStorageKey } from '../constants';
 
 const RequestType = {
   Auth: "auth",
@@ -36,6 +37,7 @@ const getTitle = (requestType) => {
 
 export const Auth = () => {
   const navigate = useNavigate();
+  const { search, pathname } = useLocation();
   const urlData = useQuery("i_m");
   const [error, setError] = useState(null);
   const [requestType, setRequestType] = useState("");
@@ -60,7 +62,7 @@ export const Auth = () => {
     // fix twice call
     let ignore = false;
     const fetchData = async () => {
-      const { packageMgr } = await ExtensionService.init();
+      const { packageMgr } = ExtensionService.getExtensionServiceInstance();
       let decodedString = Base64.decode(urlData);
       const { unpackedMessage } = await packageMgr.unpack(
         new TextEncoder().encode(decodedString)
@@ -72,11 +74,16 @@ export const Auth = () => {
         setRequestType(detectRequest(unpackedMessage));
       }
     };
-
-    fetchData().catch(console.error);
+    let _identity = JSON.parse(localStorage.getItem(identitiesStorageKey));
+    if(_identity.length <= 0) {
+      navigate('/welcome', {state: pathname+search})
+    }
+    else
+      fetchData().catch(console.error);
     return () => {
       ignore = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleClickReject() {
@@ -94,11 +101,10 @@ export const Auth = () => {
   async function handleClickProof() {
     setIsReady(false);
     try {
-      let result = await proofMethod(originalUrl);
+      await proofMethod(originalUrl);
       navigate("/");
     } catch (error) {
       console.log(error.message);
-      debugger;
       setError(error.message);
     } finally {
       setIsReady(true);
