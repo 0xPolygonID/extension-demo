@@ -33,6 +33,7 @@ export async function receiveMethod(urlParam) {
   const credentials = await fetchHandler.handleCredentialOffer(did, msgBytes);
   console.log(credentials);
   await credWallet.saveAll(credentials);
+  return 'SAVED';
 }
 
 export async function proofMethod(urlParam) {
