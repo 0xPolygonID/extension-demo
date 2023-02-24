@@ -27,7 +27,7 @@ export const Home = () => {
   }, []);
 
   const getCredentials = async () => {
-    const { credWallet } = await ExtensionService.init();
+    const { credWallet } = await ExtensionService.getExtensionServiceInstance();
 	// todo find by query
     const credentials = await credWallet.list();
     setCredentials(credentials);

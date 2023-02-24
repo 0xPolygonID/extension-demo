@@ -38,7 +38,7 @@ export async function receiveMethod(urlParam) {
 }
 
 export async function proofMethod(urlParam) {
-  const { packageMgr, proofService, credWallet, did } =
+  const { packageMgr, proofService, credWallet } =
     ExtensionService.getExtensionServiceInstance();
   let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
   let byteEncoder = new TextEncoder();
@@ -48,11 +48,12 @@ export async function proofMethod(urlParam) {
   const { body } = authR;
   const { scope = [] } = body;
 
-  if (scope.length > 0) {
+  if (scope.length > 1) {
     throw new Error("not support 2 scope");
   }
   const [zkpReq] = scope;
   const [firstCredential] = await credWallet.findByQuery(zkpReq.query);
+  const did = DID.parse(LocalStorageServices.getActiveAccountDid());
   const response = await authHandler.generateAuthorizationResponse(
     did,
     0,

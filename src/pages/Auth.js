@@ -7,7 +7,8 @@ import FullLogo from "../ui/icons/Primary_ Logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
-import { identitiesStorageKey } from '../constants';
+import { identitiesStorageKey } from "../constants";
+import { LinearProgress } from "@mui/material";
 
 const RequestType = {
   Auth: "auth",
@@ -75,11 +76,9 @@ export const Auth = () => {
       }
     };
     let _identity = JSON.parse(localStorage.getItem(identitiesStorageKey));
-    if(_identity.length <= 0) {
-      navigate('/welcome', {state: pathname+search})
-    }
-    else
-      fetchData().catch(console.error);
+    if (_identity.length <= 0) {
+      navigate("/welcome", { state: pathname + search });
+    } else fetchData().catch(console.error);
     return () => {
       ignore = true;
     };
@@ -113,9 +112,10 @@ export const Auth = () => {
 
   async function handleClickReceive() {
     setIsReady(false);
-	let result = await receiveMethod(originalUrl).catch(error=>setError(error));
-	if(result === 'SAVED')
-		navigate('/');
+    let result = await receiveMethod(originalUrl).catch((error) =>
+      setError(error)
+    );
+    if (result === "SAVED") navigate("/");
     else {
       setError(result.message);
       setIsReady(true);
@@ -131,16 +131,17 @@ export const Auth = () => {
         name: "Credential type",
         value: query.type,
       });
-      data.push({
-        name: "Requirements",
-        value: Object.keys(query.credentialSubject).reduce((acc, field) => {
-          const filter = query.credentialSubject[field];
-          const filterStr = Object.keys(filter).map((operator) => {
-            return `${field} - ${operator} ${filter[operator]}\n`;
-          });
-          return acc.concat(filterStr);
-        }, ""),
-      });
+      query.credentialSubject &&
+        data.push({
+          name: "Requirements",
+          value: Object.keys(query.credentialSubject).reduce((acc, field) => {
+            const filter = query.credentialSubject[field];
+            const filterStr = Object.keys(filter).map((operator) => {
+              return `${field} - ${operator} ${filter[operator]}\n`;
+            });
+            return acc.concat(filterStr);
+          }, ""),
+        });
       data.push({
         name: "Allowed issuers",
         value: query.allowedIssuers.join(", "),
@@ -156,8 +157,9 @@ export const Auth = () => {
     <div className={"auth-wrapper"}>
       <img src={FullLogo} alt={""} />
       <h2>
-        {getTitle(requestType)} {!isReady && <CircularProgress size={20} />}
+        {getTitle(requestType)} 
       </h2>
+	  {!isReady && <LinearProgress size={20} />}
       {requestType && requestType === RequestType.Proof && (
         <div>
           {getCredentialRequestData().map((oneCredentialRequest) => {
@@ -165,6 +167,9 @@ export const Auth = () => {
               return <CredentialRowDetail key={index} {...data} />;
             });
           })}
+          <div className={"error"}>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+          </div>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
@@ -184,9 +189,6 @@ export const Auth = () => {
             >
               Cancel
             </Button>
-          </div>
-          <div className={"progress"}>
-            {error && <p style={{ color: "red" }}>{error}</p>}
           </div>
         </div>
       )}
