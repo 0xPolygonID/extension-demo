@@ -4,8 +4,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Icon from '@mui/material/Icon';
 import Tooltip from '@mui/material/Tooltip';
 export const AccountInfo = (props)=> {
-	let currentAccount = JSON.parse(props.account)
-	let finalString = `${currentAccount[0].did.slice(0, 6)} ... ${currentAccount[0].did.slice(-6)}`;
+	let currentAccount = props.accounts[0]
+	let finalString = `${currentAccount.did.slice(0, 6)} ... ${currentAccount.did.slice(-6)}`;
 	return (
 		<div className={'menu-bar'}>
 			<div className={'account-info'}>
@@ -20,9 +20,9 @@ export const AccountInfo = (props)=> {
 				<div style={{display: 'inline'}}>
 					<Tooltip disableFocusListener title="Copy to clipboard">
 						<button className="selected-account__clickable" onClick={()=>{
-							navigator.clipboard.writeText(currentAccount[0].did);
+							navigator.clipboard.writeText(currentAccount.did);
 						}}>
-							<div className={'selected-account__name'}>{currentAccount[0].name}</div>
+							<div className={'selected-account__name'}>{currentAccount.name}</div>
 							<div className="selected-account__address">
 								{finalString}
 								<div className={'selected-account__copy'}>

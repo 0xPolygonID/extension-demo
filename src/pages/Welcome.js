@@ -1,4 +1,5 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Logo from '../ui/icons/Logo.svg';
 import FullLogo from '../ui/icons/Primary_ Logo.svg';
 import Button from '@mui/material/Button';
@@ -6,10 +7,12 @@ import Icon from '@mui/material/Icon';
 import TextField from '@mui/material/TextField';
 import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import AddIcon from '@mui/icons-material/Add';
-import { useNavigate } from 'react-router-dom';
-import { WalletService } from '../services/Wallet.service';
+import { DEFAULT_ACCOUNT_NAME, identitiesStorageKey } from '../constants';
+import { IdentityServices } from '../services/Identity.services';
+
 export const Welcome = () => {
 	const navigate = useNavigate();
+	const [isIdentityPresent, setIdentity] = useState(false);
 	const [step, setStep] = useState('step1');
 	const [input, setInput] = useState({
 		password: '',
@@ -19,6 +22,15 @@ export const Welcome = () => {
 		password: '',
 		confirmPassword: ''
 	})
+	
+	useEffect(()=> {
+		let _identity = JSON.parse(localStorage.getItem(identitiesStorageKey));
+		if(_identity.length <= 0)
+			setIdentity(false)
+		else
+			setIdentity(true)
+	},[])
+	
 	const onInputChange = (e) => {
 		const { name, value } = e.target;
 		setInput(prev => ({
@@ -67,10 +79,13 @@ export const Welcome = () => {
 		setStep('step3');
 	}
 	async function handleClickCreatePassword() {
-		const { did } = await WalletService.createWallet();
-		localStorage.setItem('accounts',JSON.stringify([{name: 'Polygon Account', did: did.toString()}]));
-		window.dispatchEvent(new Event("storage"));
-		navigate('/');
+		if(!isIdentityPresent) {
+			const identity = await IdentityServices.createIdentity();
+			debugger;
+			localStorage.setItem('accounts',JSON.stringify([{name: DEFAULT_ACCOUNT_NAME, did: identity.did.toString( )}]));
+			window.dispatchEvent(new Event("storage"));
+			navigate('/');
+		}
 	}
 	return (
 		<div>

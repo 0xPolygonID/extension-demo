@@ -1,5 +1,5 @@
-export const RHS_URL = '';
-export const RPC_URL = '';
+export const RHS_URL = 'https://rhs-staging.polygonid.me';
+export const RPC_URL = 'https://polygon-mumbai.g.alchemy.com/v2/BI7_GYAO787OflUC7E6DhMJNkhkyq7kp';
 
 export const defaultEthConnectionConfig = {
 	url: RPC_URL,
@@ -14,3 +14,9 @@ export const defaultEthConnectionConfig = {
 	waitReceiptCycleTime: 30000,
 	waitBlockCycleTime: 3000
 };
+
+export const INIT = 'Init';
+
+export const identitiesStorageKey = 'identities';
+
+export const DEFAULT_ACCOUNT_NAME = 'Polygon Account';

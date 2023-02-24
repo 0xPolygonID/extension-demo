@@ -2,7 +2,7 @@ import React from 'react';
 import appLogo from '../../ui/icons/Logo.svg';
 import { NetworkDropDown } from '../NetworkDropDown';
 import AccountMenu from '../AccountMenu/AccountMenu';
-export const HeaderComponent = (props)=> {
+export const HeaderComponent = ()=> {
 	return (
 		<div className={'app-header'}>
 			<div className={'app-header-contents'}>
@@ -12,7 +12,7 @@ export const HeaderComponent = (props)=> {
 				<div className={'network-section'}>
 					<NetworkDropDown/>
 				</div>
-				<AccountMenu account={props.account}/>
+				<AccountMenu/>
 			</div>
 		</div>
 	);

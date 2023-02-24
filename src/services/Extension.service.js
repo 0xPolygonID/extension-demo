@@ -1,7 +1,7 @@
 import * as JWZ from '@iden3/js-jwz/dist/esm_esbuild/index';
 import { CircuitStorageInstance } from './CircuitStorage';
 import { WalletService } from './Wallet.service';
-import { defaultEthConnectionConfig } from '../constants';
+import { defaultEthConnectionConfig, INIT } from '../constants';
 
 const {
 	ProofService,
@@ -38,9 +38,12 @@ export class ExtensionService {
 				packageMgr,
 				proofService,
 				credWallet,
-				did
+				did,
+				wallet,
+				status: INIT
 			}
 		}
+		console.log('Extension services has been initialized',this.instanceES);
 		return this.instanceES;
 	}
 	static async getPackageMgr(circuitData, prepareFn, stateVerificationFn){

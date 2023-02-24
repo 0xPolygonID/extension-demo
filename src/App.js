@@ -1,52 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { Home, Welcome, Auth, NewAccount } from './pages';
 import { Routes, Route } from 'react-router-dom';
+import { ExtensionService } from './services/Extension.service';
+import { INIT } from './constants';
 import './App.css';
-import { CircuitStorageInstance } from './services';
+import CircularProgress from '@mui/material/CircularProgress';
 
 function App() {
-  const [account, setAccount] = useState(null);
+  const [inited, setInited] = useState(false);
+  const [error, setError] = useState('');
   
   useEffect(()=>{
-    CircuitStorageInstance.init();
+    const init = async () => {
+      const { status } = await ExtensionService.init();
+      if(status === INIT)
+        setInited(true);
+      else
+        setError('Extension services cant be initialized');
+    }
+    init()
+        .catch(error => {
+          setError(error)
+          console.log(error);
+        });
   },[])
 
-  useEffect(()=>{
-    window.addEventListener('storage', () => {
-      console.log("Change to local storage!");
-      let accounts = localStorage.getItem('accounts');
-      setAccount(accounts);
-      
-    })
-    let accounts = localStorage.getItem('accounts')
-    setAccount(accounts);
-    // if(chrome.storage) { // OLD version
-    //   chrome.storage.sync.get('account', function(result){
-    //     // console.log('result', result);
-    //     setAccount(result.account)
-    //   });
-    // }
-    // if(chrome.storage)
-    //   chrome.storage.onChanged.addListener((changes, namespace) => {
-    //     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    //       if(key === 'account')
-    //         setAccount(newValue);
-    //       console.log(
-    //           `Storage key "${key}" in namespace "${namespace}" changed.`,
-    //           `Old value was "${oldValue}", new value is "${newValue}".`
-    //       );
-    //     }
-    // })
-    
-  },[]);
-    return (
+  return (
     <div className="App">
-      <Routes>
-        <Route path={'/'} element={account ? <Home account={account}/> : <Welcome/>} />
+      {!inited && error && <div>
+        <h6>{error}</h6>
+      </div>}
+      { inited && !error ? (<Routes>
+        <Route path={'/'} element={<Home/>}/>
         <Route path={'/welcome'} element={<Welcome/>} />
         <Route path={'/auth'} element={<Auth/>} />
         <Route path={'/newAccount'} element={<NewAccount/>} />
-      </Routes>
+      </Routes>) : (<CircularProgress/>)
+      }
     </div>
   );
 }

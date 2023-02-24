@@ -16,7 +16,7 @@ import './styles.css'
 
 export default function AccountMenu(props) {
 	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [ existingAccounts, setexistingAccounts] = useState([]);
+	const [existingAccounts, setexistingAccounts] = useState([]);
 	const open = Boolean(anchorEl);
 	const navigate = useNavigate();
 	
