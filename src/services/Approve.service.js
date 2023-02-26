@@ -2,15 +2,16 @@ import { Base64 } from "js-base64";
 import axios from "axios";
 import { ExtensionService } from "./Extension.service";
 import { LocalStorageServices } from './LocalStorage.services';
+import { byteEncoder } from "../utils";
 
 const { AuthHandler, FetchHandler, core } = window.PolygonIdSdk;
 const { DID } = core;
+
 export async function approveMethod(urlParam) {
   const { packageMgr, proofService, credWallet } = ExtensionService.getExtensionServiceInstance();
   
   let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
 
-  let byteEncoder = new TextEncoder();
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
   let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
   const authRes = await authHandler.handleAuthorizationRequestForGenesisDID(
@@ -29,7 +30,6 @@ export async function receiveMethod(urlParam) {
   const { packageMgr, credWallet } = ExtensionService.getExtensionServiceInstance();
   let fetchHandler = new FetchHandler(packageMgr);
 
-  let byteEncoder = new TextEncoder();
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
   const credentials = await fetchHandler.handleCredentialOffer(DID.parse(LocalStorageServices.getActiveAccountDid()), msgBytes);
   console.log(credentials);
@@ -38,14 +38,11 @@ export async function receiveMethod(urlParam) {
 }
 
 export async function proofMethod(urlParam) {
-  const { packageMgr, proofService, credWallet } =
-    ExtensionService.getExtensionServiceInstance();
-  let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
-  let byteEncoder = new TextEncoder();
+  const { authHandler, credWallet } = ExtensionService.getExtensionServiceInstance();
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
-  const authR = await authHandler.parseAuthorizationRequest(msgBytes);
+  const authRequest = await authHandler.parseAuthorizationRequest(msgBytes);
 
-  const { body } = authR;
+  const { body } = authRequest;
   const { scope = [] } = body;
 
   if (scope.length > 1) {
@@ -57,7 +54,7 @@ export async function proofMethod(urlParam) {
   const response = await authHandler.generateAuthorizationResponse(
     did,
     0,
-    authR,
+    authRequest,
     [
       {
         credential: firstCredential,

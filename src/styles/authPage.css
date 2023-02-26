@@ -12,6 +12,10 @@
     white-space:nowrap;
     overflow:hidden;
 }
+.auth-wrapper .request-proof {
+    font-size: 12px;
+    text-align: center;
+}
 .auth-wrapper img{
     width: 100px
 }
@@ -24,6 +28,9 @@
     margin: 0 30px;
 }
 
+.auth-wrapper .error {
+    margin-top: 30px;
+}
 .auth-wrapper .progress{
     position: absolute;
     top: 50%;
