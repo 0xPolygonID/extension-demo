@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
 import { Base64 } from "js-base64";
 import Button from "@mui/material/Button";
 import { approveMethod, proofMethod, receiveMethod } from "../services";
@@ -9,6 +8,7 @@ import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
 import { identitiesStorageKey } from "../constants";
 import { LinearProgress } from "@mui/material";
+import { byteEncoder } from "../utils";
 
 const RequestType = {
   Auth: "auth",
@@ -64,10 +64,8 @@ export const Auth = () => {
     let ignore = false;
     const fetchData = async () => {
       const { packageMgr } = ExtensionService.getExtensionServiceInstance();
-      let decodedString = Base64.decode(urlData);
-      const { unpackedMessage } = await packageMgr.unpack(
-        new TextEncoder().encode(decodedString)
-      );
+      const msgBytes = byteEncoder.encode(Base64.decode(urlData));
+      const { unpackedMessage } = await packageMgr.unpack(msgBytes);
       if (!ignore) {
         console.log("unpackedMessage", unpackedMessage);
         setOriginalUrl(urlData);
@@ -153,29 +151,31 @@ export const Auth = () => {
       return data;
     });
   };
+  const progressHeight = 20;
   return (
     <div className={"auth-wrapper"}>
       <img src={FullLogo} alt={""} />
-      <h2>
+      <h2 >
         {getTitle(requestType)} 
       </h2>
-	  {!isReady && <LinearProgress size={20} />}
+      <div className="progress-indicator" style={{height: progressHeight}}>
+	      {!isReady && <LinearProgress size={progressHeight} />}
+      </div>
       {requestType && requestType === RequestType.Proof && (
         <div>
+          <p className={"request-proof"}><b>This organization</b> requests a valid proof of this claim to vote <b>{data.body.reason}</b></p>
           {getCredentialRequestData().map((oneCredentialRequest) => {
             return oneCredentialRequest.map((data, index) => {
               return <CredentialRowDetail key={index} {...data} />;
             });
           })}
-          <div className={"error"}>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-          </div>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
               color="primary"
               size="medium"
               variant="outlined"
+              disabled={!isReady}
               onClick={handleClickProof}
             >
               Continue
@@ -202,6 +202,7 @@ export const Auth = () => {
               color="primary"
               size="medium"
               variant="outlined"
+              disabled={!isReady}
               onClick={handleClickApprove}
             >
               Approve
@@ -215,10 +216,6 @@ export const Auth = () => {
             >
               Reject
             </Button>
-          </div>
-          <div className={"progress"}>
-            {!isReady && <CircularProgress />}
-            {error && <p style={{ color: "red" }}>{error}</p>}
           </div>
         </div>
       )}
@@ -244,6 +241,7 @@ export const Auth = () => {
               color="primary"
               size="medium"
               variant="outlined"
+              disabled={!isReady}
               onClick={handleClickReceive}
             >
               Receive
@@ -258,12 +256,11 @@ export const Auth = () => {
               Decline
             </Button>
           </div>
-          <div className={"progress"}>
-            {!isReady && <CircularProgress />}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-          </div>
         </div>
       )}
+      <div className={"error"}>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+      </div>
     </div>
   );
 };

@@ -12,6 +12,7 @@ const {
 	VerificationHandlerFunc,
 	PackageManager,
 	EthStateStorage,
+	AuthHandler,
 } = window.PolygonIdSdk;
 
 
@@ -28,12 +29,13 @@ export class ExtensionService {
 		
 		let proofService = new ProofService(wallet, credWallet, circuitStorage, new EthStateStorage(defaultEthConnectionConfig));
 		
-		
 		let packageMgr = await ExtensionService.getPackageMgr(
 			await circuitStorage.loadCircuitData('authV2'),
 			proofService.generateAuthV2Inputs.bind(proofService),
 			proofService.verifyState.bind(proofService)
 		);
+		
+		let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
 		
 		if(!this.instanceCS) {
 			this.instanceES = {
@@ -42,6 +44,7 @@ export class ExtensionService {
 				credWallet,
 				wallet,
 				dataStorage,
+				authHandler,
 				status: INIT,
 			}
 		}
