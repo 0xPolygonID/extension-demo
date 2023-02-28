@@ -163,7 +163,7 @@ export const Auth = () => {
       </div>
       {requestType && requestType === RequestType.Proof && (
         <div>
-          <p className={"request-proof"}><b>This organization</b> requests a valid proof of this claim to vote <b>{data.body.reason}</b></p>
+          <p className={"request-proof"}><b>This organization</b> requests a valid proof of next credential for <b>{data.body.reason}</b></p>
           {getCredentialRequestData().map((oneCredentialRequest) => {
             return oneCredentialRequest.map((data, index) => {
               return <CredentialRowDetail key={index} {...data} />;
