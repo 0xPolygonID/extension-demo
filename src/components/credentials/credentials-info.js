@@ -28,6 +28,7 @@ export const CredentialsInfo = (props) => {
             name={credential.credentialSubject.type}
             issuer={credential.issuer}
             credential={credential}
+            onDelete={props.onDeleteCredential}
             onClick={handleCredentialClick}
           />
         );

@@ -33,13 +33,22 @@ export const Home = () => {
     setCredentials(credentials);
   };
 
+  const handleCredentialDelete = async (credentialId) => {
+    const { credWallet } = ExtensionService.getExtensionServiceInstance();
+    await credWallet.remove(credentialId);
+    await getCredentials();
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
 	  { accounts.length <=0 && <p>Redirecting...</p> }
 	  { accounts.length > 0 && <div>
         <HeaderComponent />
         <AccountInfo accounts={accounts} />
-        <CredentialsInfo credentials={credentials} />
+        <CredentialsInfo
+          credentials={credentials}
+          onDeleteCredential={handleCredentialDelete}
+        />
 	  </div>
 	  }
     </div>
