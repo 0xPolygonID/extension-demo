@@ -6,15 +6,12 @@ export class IdentityServices {
   static async createIdentity() {
     if (!this.instanceIS) {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
-      const seedPhrase = new TextEncoder().encode(
-        "seedseedseedseedseedseedseedseed"
-      );
+    
 
       let identity = await wallet.createIdentity("http://polygonID.com/", {
         method: core.DidMethod.Iden3,
         blockchain: core.Blockchain.Polygon,
         networkId: core.NetworkId.Mumbai,
-        seed: seedPhrase,
         rhsUrl: RHS_URL,
       });
       console.log("!!!!!!!!!!!!!!!!", identity);
