@@ -64,7 +64,7 @@ export async function proofMethod(urlParam) {
     ]
   );
   return await axios
-  .post(`${authR.body.callbackUrl}`, response.token)
+  .post(`${authRequest.body.callbackUrl}`, response.token)
   .then((response) => response)
   .catch((error) => error.toJSON());
 }
