@@ -20,12 +20,10 @@ const { proving } = JWZ;
 export class ExtensionService {
 	static instanceES;
 	static async init() {
-		await CircuitStorageInstance.init();
-		
 		let accountInfo = await WalletService.createWallet();
 		const { wallet, credWallet, dataStorage } = accountInfo;
 		
-		let circuitStorage = CircuitStorageInstance.getCircuitStorageInstance();
+		const circuitStorage = await CircuitStorageInstance.getCircuitStorageInstance();
 		
 		let proofService = new ProofService(wallet, credWallet, circuitStorage, new EthStateStorage(defaultEthConnectionConfig));
 		
