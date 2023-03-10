@@ -34,13 +34,6 @@
     "tabs",
     "activeTab"
   ],
-  "optional_permissions": [
-    "unlimitedStorage"
-  ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
   "web_accessible_resources": [
     "index.html"
   ],

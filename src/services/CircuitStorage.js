@@ -1,55 +1,44 @@
-const { CircuitStorage, InMemoryDataSource } = window.PolygonIdSdk;
+const { CircuitStorage, InMemoryDataSource, CircuitExtensionStorage, IndexedDBCircuitStorage } = window.PolygonIdSdk;
 
-
-class ChromeStorageDataSource {
-	constructor() {
-		this.storage = chrome.storage.local;
-	}
-
-	async get(key) {
-		return new Promise(resolve => {
-			this.storage.get(key, result => {
-				resolve(result[key]);
-			});
-		});
-	}
-
-	async set(key, value) {
-		return new Promise(resolve => {
-			this.storage.set({ [key]: value }, () => {
-				resolve();
-			});
-		});
-	}
-}
 
 export class CircuitStorageInstance {
 	static async getCircuitStorageInstance() {
+		const circuitsIds = ['authV2', 'credentialAtomicQueryMTPV2', 'credentialAtomicQuerySigV2'];
 		if (!this.instanceCS) {
-			this.instanceCS = new CircuitStorage(new ChromeStorageDataSource());
-			const auth = await this.#getCircuitData('authV2');
-			const mtp = await this.#getCircuitData('credentialAtomicQueryMTPV2');
-			const sig = await this.#getCircuitData('credentialAtomicQuerySigV2');
+			this.instanceCS = new CircuitStorage(new InMemoryDataSource());
+			try {
+				console.time('check loading circuits from DB');
+				await this.instanceCS.loadCircuitData(circuitsIds[0]);
+				console.timeEnd('check loading circuits from DB');
+				return this.instanceCS;
+			} catch (e) {
+				console.log('error', e);
 
-			await this.#saveCircuitData('authV2', auth);
-			await this.#saveCircuitData('credentialAtomicQueryMTPV2', mtp);
-			await this.#saveCircuitData('credentialAtomicQuerySigV2', sig);
+				console.time('loading circuits from files');
+				const circuits = await Promise.all(circuitsIds.map(circuitId => this.#loadCircuitsDataFromFile(circuitId)));
+				console.timeEnd('loading circuits from files');
+
+				console.time('saving circuits to DB');
+				await Promise.all(circuits.map(circuit => this.#saveCircuitData(circuit.circuitId, circuit)));
+				console.timeEnd('saving circuits to DB');
+				return this.instanceCS;
+			}
 		}
 
 		return this.instanceCS;
 	}
 
-	static async #getCircuitData(circuitId) {
+	static async #loadCircuitsDataFromFile(circuitId) {
 		const [wasm, provingKey, verificationKey] = await Promise.all([
 			fetch(`./${circuitId}/circuit.wasm`)
 				.then(response => response.arrayBuffer())
-				.then(buffer => new Uint8Array(buffer)),
+				.then(buffer => Array.from(new Uint8Array(buffer))),
 			fetch(`./${circuitId}/circuit_final.zkey`)
 				.then(response => response.arrayBuffer())
-				.then(buffer => new Uint8Array(buffer)),
+				.then(buffer => Array.from(new Uint8Array(buffer))),
 			fetch(`./${circuitId}/verification_key.json`)
 				.then(response => response.arrayBuffer())
-				.then(buffer => new Uint8Array(buffer))
+				.then(buffer => Array.from(new Uint8Array(buffer)))
 		]);
 
 		return {
@@ -61,12 +50,7 @@ export class CircuitStorageInstance {
 
 	}
 
-	static async #saveCircuitData(data) {
-		await this.instanceCS.saveCircuitData(data.circuitId, {
-			circuitId: data.circuitId,
-			wasm: data.wasm,
-			provingKey: data.provingKey,
-			verificationKey: data.verificationKey
-		});
+	static async #saveCircuitData(circuitId, data) {
+		await this.instanceCS.saveCircuitData(circuitId, data);
 	}
 }
