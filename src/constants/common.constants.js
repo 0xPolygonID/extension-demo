@@ -17,6 +17,4 @@ export const defaultEthConnectionConfig = {
 
 export const INIT = 'Init';
 
-export const identitiesStorageKey = 'identities';
-
 export const DEFAULT_ACCOUNT_NAME = 'Polygon Account';

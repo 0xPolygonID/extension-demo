@@ -6,7 +6,6 @@ import FullLogo from "../ui/icons/Primary_ Logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
-import { identitiesStorageKey } from "../constants";
 import { LinearProgress } from "@mui/material";
 import { byteEncoder } from "../utils";
 
@@ -62,8 +61,8 @@ export const Auth = () => {
   useEffect(() => {
     // fix twice call
     let ignore = false;
+    const { packageMgr, dataStorage } = ExtensionService.getExtensionServiceInstance();
     const fetchData = async () => {
-      const { packageMgr } = ExtensionService.getExtensionServiceInstance();
       const msgBytes = byteEncoder.encode(Base64.decode(urlData));
       const { unpackedMessage } = await packageMgr.unpack(msgBytes);
       if (!ignore) {
@@ -73,10 +72,13 @@ export const Auth = () => {
         setRequestType(detectRequest(unpackedMessage));
       }
     };
-    let _identity = JSON.parse(localStorage.getItem(identitiesStorageKey));
-    if (_identity.length <= 0) {
-      navigate("/welcome", { state: pathname + search });
-    } else fetchData().catch(console.error);
+    dataStorage.identity.getAllIdentities()
+      .then(_identity => {
+        if (_identity.length <= 0) {
+          navigate("/welcome", { state: pathname + search });
+        } else fetchData().catch(console.error);
+      }).catch(console.error);;
+
     return () => {
       ignore = true;
     };
@@ -156,10 +158,10 @@ export const Auth = () => {
     <div className={"auth-wrapper"}>
       <img src={FullLogo} alt={""} />
       <h2 >
-        {getTitle(requestType)} 
+        {getTitle(requestType)}
       </h2>
-      <div className="progress-indicator" style={{height: progressHeight}}>
-	      {!isReady && <LinearProgress size={progressHeight} />}
+      <div className="progress-indicator" style={{ height: progressHeight }}>
+        {!isReady && <LinearProgress size={progressHeight} />}
       </div>
       {requestType && requestType === RequestType.Proof && (
         <div>
