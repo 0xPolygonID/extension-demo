@@ -1,6 +1,6 @@
 import { RHS_URL } from "../constants";
 import { ExtensionService } from "./Extension.service";
-const { core } = window.PolygonIdSdk;
+const { core, CredentialStatusType } = window.PolygonIdSdk;
 export class IdentityServices {
   static instanceIS;
   static async createIdentity() {
@@ -8,11 +8,14 @@ export class IdentityServices {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
     
 
-      let identity = await wallet.createIdentity("http://polygonID.com/", {
+      let identity = await wallet.createIdentity({
         method: core.DidMethod.Iden3,
         blockchain: core.Blockchain.Polygon,
         networkId: core.NetworkId.Mumbai,
-        rhsUrl: RHS_URL,
+        revocationOpts: {
+          type: CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
+          baseUrl: RHS_URL
+        }
       });
       console.log("!!!!!!!!!!!!!!!!", identity);
       this.instanceIS = identity;
