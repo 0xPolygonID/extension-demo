@@ -28,11 +28,6 @@ export class WalletService {
 				new IndexedDBDataSource(IdentityStorage.identitiesStorageKey),
 				new IndexedDBDataSource(IdentityStorage.profilesStorageKey)
 			),
-			// credential: new CredentialStorage(new InMemoryDataSource()),
-			// identity: new IdentityStorage(
-			// 	new InMemoryDataSource(),
-			// 	new InMemoryDataSource()
-			// ),
 			mt: new MerkleTreeIndexedDBStorage(40),
 			states: new EthStateStorage(defaultEthConnectionConfig)
 
