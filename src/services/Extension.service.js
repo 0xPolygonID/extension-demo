@@ -4,7 +4,7 @@ import { WalletService } from './Wallet.service';
 import { defaultEthConnectionConfig, INIT } from '../constants';
 
 
-const {
+import {
 	ProofService,
 	PlainPacker,
 	ZKPPacker,
@@ -13,7 +13,7 @@ const {
 	PackageManager,
 	EthStateStorage,
 	AuthHandler,
-} = window.PolygonIdSdk;
+} from '@0xpolygonid/js-sdk';
 
 
 const { proving } = JWZ;

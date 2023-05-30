@@ -1,12 +1,11 @@
 import { RHS_URL } from "../constants";
 import { ExtensionService } from "./Extension.service";
-const { core, CredentialStatusType } = window.PolygonIdSdk;
+import { core, CredentialStatusType } from '@0xpolygonid/js-sdk';
 export class IdentityServices {
   static instanceIS;
   static async createIdentity() {
     if (!this.instanceIS) {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
-    
 
       let identity = await wallet.createIdentity({
         method: core.DidMethod.Iden3,

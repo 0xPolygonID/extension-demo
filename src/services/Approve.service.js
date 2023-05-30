@@ -4,7 +4,7 @@ import { ExtensionService } from "./Extension.service";
 import { LocalStorageServices } from './LocalStorage.services';
 import { byteEncoder } from "../utils";
 
-const { AuthHandler, FetchHandler, core } = window.PolygonIdSdk;
+import { AuthHandler, FetchHandler, core } from '@0xpolygonid/js-sdk';
 const { DID } = core;
 
 export async function approveMethod(urlParam) {

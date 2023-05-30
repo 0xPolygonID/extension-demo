@@ -1,6 +1,6 @@
 import { defaultEthConnectionConfig } from '../constants';
 
-const {
+import {
 	IdentityStorage,
 	CredentialStorage,
 	IndexedDBDataSource,
@@ -12,7 +12,7 @@ const {
 	EthStateStorage,
 	MerkleTreeIndexedDBStorage,
 	IndexedDBPrivateKeyStore
-} = window.PolygonIdSdk;
+} from '@0xpolygonid/js-sdk';
 
 export class WalletService {
 	static async createWallet() {
