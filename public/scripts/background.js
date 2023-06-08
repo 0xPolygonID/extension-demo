@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(request => {
       width: 390,
       height: 600,
       top: 0,
-      left: window.screen.width - 390,
+      left: request.windowWidth - 390,
     }, () => {
       console.log("Opened popup!")
     })

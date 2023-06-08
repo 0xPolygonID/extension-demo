@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "PolygonID ",
   "version": "0.2.0",
   "description": "PolygonID",
@@ -10,19 +10,22 @@
     "128": "icons/icon_128.png"
   },
   "background": {
-    "service_worker": "scripts/background.js"
+    "scripts": [
+      "scripts/background.js"],
+    "persistent": false
   },
   "content_scripts": [
     {
       "matches": [
         "<all_urls>"
       ],
+      "run_at": "document_idle",
       "js": [
         "scripts/contentScript.js"
       ]
     }
   ],
-  "action": {
+  "browser_action": {
     "default_title": "PolygonID",
     "default_popup": "index.html"
   },
@@ -31,13 +34,8 @@
     "tabs",
     "activeTab"
   ],
-  "web_accessible_resources": [{
-    "resources": ["index.html"],
-    "matches": [],
-    "extension_ids": []
-  }],
-
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
-  }
+  "web_accessible_resources": [
+    "index.html"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self' data:; worker-src 'self' data:"
 }
