@@ -1,4 +1,4 @@
-import { defaultEthConnectionConfig } from '../constants';
+import { defaultEthConnectionConfig, chainIDResolvers } from '../constants';
 
 const {
 	IdentityStorage,
@@ -32,7 +32,8 @@ export class WalletService {
 			states: new EthStateStorage(defaultEthConnectionConfig)
 
 		};
-		const credWallet = new CredentialWallet(dataStorage);
+
+		const credWallet = new CredentialWallet(dataStorage, chainIDResolvers);
 		let wallet = new IdentityWallet(kms, dataStorage, credWallet);
 
 		return {
