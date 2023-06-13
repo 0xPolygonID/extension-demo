@@ -6,8 +6,7 @@ export class IdentityServices {
   static async createIdentity() {
     if (!this.instanceIS) {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
-    
-      
+
       let identity = await wallet.createIdentity({
         method: core.DidMethod.PolygonId,
         blockchain: core.Blockchain.Polygon,
