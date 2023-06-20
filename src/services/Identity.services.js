@@ -6,15 +6,14 @@ export class IdentityServices {
   static async createIdentity() {
     if (!this.instanceIS) {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
-    
 
       let identity = await wallet.createIdentity({
-        method: core.DidMethod.Iden3,
+        method: core.DidMethod.PolygonId,
         blockchain: core.Blockchain.Polygon,
         networkId: core.NetworkId.Mumbai,
         revocationOpts: {
           type: CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
-          baseUrl: RHS_URL
+          id: RHS_URL
         }
       });
       console.log("!!!!!!!!!!!!!!!!", identity);
