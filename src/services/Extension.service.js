@@ -26,7 +26,7 @@ export class ExtensionService {
 		
 		const circuitStorage = CircuitStorageInstance.getCircuitStorageInstance();
 		
-		let proofService = new ProofService(wallet, credWallet, circuitStorage, new EthStateStorage(defaultEthConnectionConfig));
+		let proofService = new ProofService(wallet, credWallet, circuitStorage, new EthStateStorage(defaultEthConnectionConfig[0]));
 		
 		let packageMgr = await ExtensionService.getPackageMgr(
 			await circuitStorage.loadCircuitData('authV2'),

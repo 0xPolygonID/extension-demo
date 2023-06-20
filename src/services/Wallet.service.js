@@ -1,4 +1,4 @@
-import { defaultEthConnectionConfig, chainIDResolvers } from '../constants';
+import { defaultEthConnectionConfig } from '../constants';
 
 const {
 	IdentityStorage,
@@ -11,7 +11,12 @@ const {
 	KMS,
 	EthStateStorage,
 	MerkleTreeIndexedDBStorage,
-	IndexedDBPrivateKeyStore
+	IndexedDBPrivateKeyStore,
+	CredentialStatusResolverRegistry,
+	CredentialStatusType,
+	RHSResolver,
+	OnChainResolver,
+	IssuerResolver
 } = window.PolygonIdSdk;
 
 export class WalletService {
@@ -29,11 +34,26 @@ export class WalletService {
 				new IndexedDBDataSource(IdentityStorage.profilesStorageKey)
 			),
 			mt: new MerkleTreeIndexedDBStorage(40),
-			states: new EthStateStorage(defaultEthConnectionConfig)
+			states: new EthStateStorage(defaultEthConnectionConfig[0])
 
 		};
 
-		const credWallet = new CredentialWallet(dataStorage, chainIDResolvers);
+		const resolvers = new CredentialStatusResolverRegistry();
+		resolvers.register(
+			CredentialStatusType.SparseMerkleTreeProof,
+			new IssuerResolver()
+		);
+    	resolvers.register(
+			CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
+			new RHSResolver(dataStorage.states)
+		);
+		resolvers.register(
+			CredentialStatusType.Iden3OnchainSparseMerkleTreeProof2023,
+			new OnChainResolver(defaultEthConnectionConfig)
+		)
+
+
+		const credWallet = new CredentialWallet(dataStorage, resolvers);
 		let wallet = new IdentityWallet(kms, dataStorage, credWallet);
 
 		return {
