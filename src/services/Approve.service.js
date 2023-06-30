@@ -19,9 +19,14 @@ export async function approveMethod(urlParam) {
     msgBytes
   );
   console.log(authRes);
-
+  var config = {
+    headers: {
+        'Content-Type': 'text/plain'
+    },
+   responseType: 'json'
+};
   return await axios
-    .post(`${authRes.authRequest.body.callbackUrl}`, authRes.token)
+    .post(`${authRes.authRequest.body.callbackUrl}`, authRes.token,config)
     .then((response) => response)
     .catch((error) => error.toJSON());
 }
@@ -63,8 +68,14 @@ export async function proofMethod(urlParam) {
       },
     ]
   );
+  var config = {
+    headers: {
+        'Content-Type': 'text/plain'
+    },
+   responseType: 'json'
+};
   return await axios
-  .post(`${authRequest.body.callbackUrl}`, response.token)
+  .post(`${authRequest.body.callbackUrl}`, response.token,config)
   .then((response) => response)
   .catch((error) => error.toJSON());
 }
