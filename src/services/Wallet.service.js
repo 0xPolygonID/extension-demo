@@ -1,6 +1,6 @@
 import { defaultEthConnectionConfig } from '../constants';
 
-const {
+import {
 	IdentityStorage,
 	CredentialStorage,
 	IndexedDBDataSource,
@@ -17,7 +17,7 @@ const {
 	RHSResolver,
 	OnChainResolver,
 	IssuerResolver
-} = window.PolygonIdSdk;
+} from '@0xpolygonid/js-sdk';
 
 export class WalletService {
 	static async createWallet() {

@@ -1,4 +1,4 @@
-const { CircuitStorage, IndexedDBDataSource } = window.PolygonIdSdk;
+import { CircuitStorage, IndexedDBDataSource } from '@0xpolygonid/js-sdk';
 
 export class CircuitStorageInstance {
   static async init() {
