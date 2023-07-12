@@ -9,10 +9,13 @@ export const CredentialDetails = (props) => {
   const subjectData = Object.keys(credential.credentialSubject)
     .filter((key) => !["id", "type"].includes(key))
     .map((name) => {
-      const value = credential.credentialSubject[name];
+      let value = credential.credentialSubject[name];
+      if (typeof value === "object"){
+        value = JSON.stringify(value)
+      }
       return {
         name,
-        value,
+        value
       };
     });
 
