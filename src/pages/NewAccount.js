@@ -24,11 +24,11 @@ export const NewAccount = ()=> {
 		let existingAccounts = JSON.parse(localStorage.getItem("accounts"));
 		
 		if(existingAccounts !== null || existingAccounts.length !==0){
-			existingAccounts.push({name: input.account, did: did.toString()});
+			existingAccounts.push({name: input.account, did: did.string()});
 			localStorage.setItem("accounts", JSON.stringify(existingAccounts));
 		}
 		else {
-			localStorage.setItem('accounts',JSON.stringify([{name: input.account, did: did.toString()}]));
+			localStorage.setItem('accounts',JSON.stringify([{name: input.account, did: did.string()}]));
 		}
 		window.dispatchEvent(new Event("storage"));
 		navigate('/');

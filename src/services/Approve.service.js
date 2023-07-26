@@ -14,10 +14,7 @@ export async function approveMethod(urlParam) {
 
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
   let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
-  const authRes = await authHandler.handleAuthorizationRequestForGenesisDID(
-    _did,
-    msgBytes
-  );
+  const authRes = await authHandler.handleAuthorizationRequest(_did, msgBytes);
   console.log(authRes);
   var config = {
     headers: {
@@ -34,39 +31,26 @@ export async function approveMethod(urlParam) {
 export async function receiveMethod(urlParam) {
   const { packageMgr, credWallet } = ExtensionService.getExtensionServiceInstance();
   let fetchHandler = new FetchHandler(packageMgr);
-
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
-  const credentials = await fetchHandler.handleCredentialOffer(DID.parse(LocalStorageServices.getActiveAccountDid()), msgBytes);
+  const credentials = await fetchHandler.handleCredentialOffer(msgBytes);
   console.log(credentials);
   await credWallet.saveAll(credentials);
   return 'SAVED';
 }
 
 export async function proofMethod(urlParam) {
-  const { authHandler, credWallet } = ExtensionService.getExtensionServiceInstance();
+  const { authHandler } = ExtensionService.getExtensionServiceInstance();
   const msgBytes = byteEncoder.encode(Base64.decode(urlParam));
   const authRequest = await authHandler.parseAuthorizationRequest(msgBytes);
-
   const { body } = authRequest;
   const { scope = [] } = body;
-
   if (scope.length > 1) {
     throw new Error("not support 2 scope");
   }
-  const [zkpReq] = scope;
-  const [firstCredential] = await credWallet.findByQuery(zkpReq.query);
   const did = DID.parse(LocalStorageServices.getActiveAccountDid());
-  const response = await authHandler.generateAuthorizationResponse(
+  const response = await authHandler.handleAuthorizationRequest(
     did,
-    0,
-    authRequest,
-    [
-      {
-        credential: firstCredential,
-        req: zkpReq,
-        credentialSubjectProfileNonce: 0,
-      },
-    ]
+    msgBytes,
   );
   var config = {
     headers: {

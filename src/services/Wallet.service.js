@@ -16,7 +16,8 @@ import {
 	CredentialStatusType,
 	RHSResolver,
 	OnChainResolver,
-	IssuerResolver
+	IssuerResolver,
+	AgentResolver
 } from '@0xpolygonid/js-sdk';
 
 export class WalletService {
@@ -50,7 +51,11 @@ export class WalletService {
 		resolvers.register(
 			CredentialStatusType.Iden3OnchainSparseMerkleTreeProof2023,
 			new OnChainResolver(defaultEthConnectionConfig)
-		)
+		);
+		resolvers.register(
+			CredentialStatusType.Iden3commRevocationStatusV1,
+			new AgentResolver()
+		);
 
 
 		const credWallet = new CredentialWallet(dataStorage, resolvers);

@@ -82,7 +82,7 @@ export const Welcome = () => {
 	async function handleClickCreatePassword() {
 		if (!isIdentityPresent) {
 			const identity = await IdentityServices.createIdentity();
-			localStorage.setItem('accounts', JSON.stringify([{ name: DEFAULT_ACCOUNT_NAME, did: identity.did.toString(), isActive: true }]));
+			localStorage.setItem('accounts', JSON.stringify([{ name: DEFAULT_ACCOUNT_NAME, did: identity.did.string(), isActive: true }]));
 			window.dispatchEvent(new Event("storage"));
 			if (state)
 				navigate(state);
