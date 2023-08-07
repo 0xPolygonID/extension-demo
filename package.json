@@ -1,14 +1,14 @@
 {
   "name": "my-app",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "private": true,
   "dependencies": {
-    "@0xpolygonid/js-sdk": "^1.0.0-beta.16",
+    "@0xpolygonid/js-sdk": "1.0.2",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@iden3/js-crypto": "^1.0.0-beta.0",
     "@iden3/js-iden3-core": "^1.0.0-beta.0",
-    "@iden3/js-jwz": "^1.0.0-beta.0",
+    "@iden3/js-jwz": "^1.0.0",
     "@iden3/js-merkletree": "^1.0.0-beta.0",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.6",
