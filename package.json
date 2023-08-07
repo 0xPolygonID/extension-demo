@@ -1,9 +1,9 @@
 {
   "name": "my-app",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "private": true,
   "dependencies": {
-    "@0xpolygonid/js-sdk": "https://github.com/0xPolygonID/js-sdk#v2",
+    "@0xpolygonid/js-sdk": "1.0.2",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@iden3/js-crypto": "^1.0.0-beta.0",
