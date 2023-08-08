@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Base64 } from "js-base64";
 import Button from "@mui/material/Button";
 import { approveMethod, proofMethod, receiveMethod } from "../services";
 import FullLogo from "../ui/icons/Primary_ Logo.svg";
@@ -7,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
 import { LinearProgress } from "@mui/material";
-import { byteEncoder } from "../utils";
+import { base64ToBytes } from "@0xpolygonid/js-sdk";
 
 const RequestType = {
   Auth: "auth",
@@ -38,12 +37,15 @@ const getTitle = (requestType) => {
 export const Auth = () => {
   const navigate = useNavigate();
   const { search, pathname } = useLocation();
-  const urlData = useQuery("i_m");
+  const dataType = useQuery("type");
+  console.log("dataType", dataType);
+  const payload = useQuery("payload");
+  console.log("payload", payload);
   const [error, setError] = useState(null);
   const [requestType, setRequestType] = useState("");
   const [data, setData] = useState(null);
+  const [msgBytes, setMsgBytes] = useState(null); // [msgBytes, setMsgBytes
   const [isReady, setIsReady] = useState(true);
-  const [originalUrl, setOriginalUrl] = useState(null);
 
   const detectRequest = (unpackedMessage) => {
     const { type, body } = unpackedMessage;
@@ -63,11 +65,21 @@ export const Auth = () => {
     let ignore = false;
     const { packageMgr, dataStorage } = ExtensionService.getExtensionServiceInstance();
     const fetchData = async () => {
-      const msgBytes = byteEncoder.encode(Base64.decode(urlData));
+      let msgBytes;
+      if (dataType === "base64") {
+        msgBytes = base64ToBytes(payload);
+      } else {
+        msgBytes = await fetch(decodeURIComponent(payload))
+          .then(
+            (res) => res.arrayBuffer()
+          ).then(
+            (res) => new Uint8Array(res)
+          );
+      }
       const { unpackedMessage } = await packageMgr.unpack(msgBytes);
+      setMsgBytes(msgBytes);
       if (!ignore) {
         console.log("unpackedMessage", unpackedMessage);
-        setOriginalUrl(urlData);
         setData(unpackedMessage);
         setRequestType(detectRequest(unpackedMessage));
       }
@@ -90,7 +102,7 @@ export const Auth = () => {
   }
   async function handleClickApprove() {
     setIsReady(false);
-    let result = await approveMethod(originalUrl);
+    const result = await approveMethod(msgBytes);
     if (result.code !== "ERR_NETWORK") navigate("/");
     else {
       setError(result.message);
@@ -100,7 +112,7 @@ export const Auth = () => {
   async function handleClickProof() {
     setIsReady(false);
     try {
-      await proofMethod(originalUrl);
+      await proofMethod(msgBytes);
       navigate("/");
     } catch (error) {
       console.log(error.message);
@@ -112,7 +124,7 @@ export const Auth = () => {
 
   async function handleClickReceive() {
     setIsReady(false);
-    let result = await receiveMethod(originalUrl).catch((error) =>
+    let result = await receiveMethod(msgBytes).catch((error) =>
       setError(error)
     );
     if (result === "SAVED") navigate("/");
