@@ -3,7 +3,8 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import FullLogo from '../ui/icons/Primary_ Logo.svg';
 import { useNavigate } from 'react-router-dom';
-import { WalletService } from '../services/Wallet.service';
+import { IdentityService } from '../services/Identity.service';
+
 export const NewAccount = ()=> {
 	const [input, setInput] = useState({
 		account: '',
@@ -19,8 +20,8 @@ export const NewAccount = ()=> {
 	function handleClickCancel(){
 		navigate('/');
 	}
-	function handleClickCreateAccount() {
-		const { did } = WalletService.createWallet();
+	async function handleClickCreateAccount() {
+		const { did } = await IdentityService.createIdentity();
 		const existingAccounts = JSON.parse(localStorage.getItem("accounts"));
 		if (existingAccounts !== null || existingAccounts.length !== 0){
 			existingAccounts.push({name: input.account, did: did.string()});
