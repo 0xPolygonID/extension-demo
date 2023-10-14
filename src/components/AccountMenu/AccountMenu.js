@@ -14,16 +14,15 @@ import Logout from '@mui/icons-material/Logout';
 
 import './styles.css'
 
-export default function AccountMenu(props) {
+export default function AccountMenu() {
 	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [existingAccounts, setexistingAccounts] = useState([]);
+	const [existingAccounts, setExistingAccounts] = useState([]);
 	const open = Boolean(anchorEl);
 	const navigate = useNavigate();
-	
 	useEffect(()=> {
-		let existingAccounts = JSON.parse(localStorage.getItem("accounts"));
-		setexistingAccounts(existingAccounts);
-	},[])
+		const existingAccounts = JSON.parse(localStorage.getItem("accounts"));
+		setExistingAccounts(existingAccounts);
+	}, []);
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};

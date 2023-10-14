@@ -1,7 +1,7 @@
 import * as JWZ from '@iden3/js-jwz/dist/esm_esbuild/index';
-import { CircuitStorageInstance } from './CircuitStorage';
+import { CircuitStorageService } from "./CircuitStorage";
 import { WalletService } from './Wallet.service';
-import { defaultEthConnectionConfig, INIT } from '../constants';
+import { defaultEthConnectionConfig } from '../constants';
 
 
 import {
@@ -15,47 +15,41 @@ import {
 	AuthHandler,
 } from '@0xpolygonid/js-sdk';
 
-
-const { proving } = JWZ;
 export class ExtensionService {
-	static instanceES;
+	static instance;
+	
 	static async init() {
-		await CircuitStorageInstance.init();
-		let accountInfo = await WalletService.createWallet();
-		const { wallet, credWallet, dataStorage } = accountInfo;
-		
-		const circuitStorage = CircuitStorageInstance.getCircuitStorageInstance();
-		
-		let proofService = new ProofService(wallet, credWallet, 
-			circuitStorage, new EthStateStorage(defaultEthConnectionConfig[0]),
-			{ipfsGatewayURL:"https://ipfs.io"});
-		
-		let packageMgr = await ExtensionService.getPackageMgr(
-			await circuitStorage.loadCircuitData('authV2'),
+		const circuitStorage = await CircuitStorageService.getInstance();
+		const { idenWallet, credWallet, dataStorage } = WalletService.createWallet();
+		const proofService = new ProofService(
+			idenWallet,
+			credWallet,
+			circuitStorage,
+			new EthStateStorage(defaultEthConnectionConfig[0]),
+			{ ipfsGatewayURL: "https://ipfs.io" }
+		);
+		const packageMgr = await ExtensionService.getPackageMgr(
+			await circuitStorage.loadCircuitData("authV2"),
 			proofService.generateAuthV2Inputs.bind(proofService),
 			proofService.verifyState.bind(proofService)
 		);
-		
-		let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
-		
-		if(!this.instanceCS) {
-			this.instanceES = {
-				packageMgr,
-				proofService,
-				credWallet,
-				wallet,
-				dataStorage,
-				authHandler,
-				status: INIT,
-			}
-		}
-		console.log('Extension services has been initialized',this.instanceES);
-		return this.instanceES;
+		const authHandler = new AuthHandler(packageMgr, proofService, credWallet);
+		const instance = {
+      packageMgr,
+      proofService,
+      idenWallet,
+      credWallet,
+      dataStorage,
+      authHandler,
+    };
+		console.log('Extension services has been initialized', instance);
+		return instance;
 	}
+
 	static async getPackageMgr(circuitData, prepareFn, stateVerificationFn){
 		const authInputsHandler = new DataPrepareHandlerFunc(prepareFn);
 		const verificationFn = new VerificationHandlerFunc(stateVerificationFn);
-		const mapKey = proving.provingMethodGroth16AuthV2Instance.methodAlg.toString();
+		const mapKey = JWZ.proving.provingMethodGroth16AuthV2Instance.methodAlg.toString();
 		const verificationParamMap = new Map([
 			[
 				mapKey,
@@ -65,24 +59,24 @@ export class ExtensionService {
 				}
 			]
 		]);
-		
 		const provingParamMap = new Map();
 		provingParamMap.set(mapKey, {
 			dataPreparer: authInputsHandler,
 			provingKey: circuitData.provingKey,
 			wasm: circuitData.wasm
 		});
-		
 		const mgr = new PackageManager();
 		const packer = new ZKPPacker(provingParamMap, verificationParamMap);
 		const plainPacker = new PlainPacker();
 		mgr.registerPackers([packer, plainPacker]);
-		
 		return mgr;
 	}
 	
-	static getExtensionServiceInstance() {
-		return this.instanceES;
+	static getInstance() {
+		if (!this.instance) {
+			this.instance = this.init();
+		};
+		return this.instance;
 	}
 	
 }

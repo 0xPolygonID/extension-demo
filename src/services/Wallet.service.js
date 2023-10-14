@@ -21,12 +21,12 @@ import {
 } from '@0xpolygonid/js-sdk';
 
 export class WalletService {
-	static async createWallet() {
+	static createWallet() {
 		const keyStore = new IndexedDBPrivateKeyStore();
 		const bjjProvider = new BjjProvider(KmsKeyType.BabyJubJub, keyStore);
 		const kms = new KMS();
 		kms.registerKeyProvider(KmsKeyType.BabyJubJub, bjjProvider);
-		let dataStorage = {
+		const dataStorage = {
 			credential: new CredentialStorage(
 				new IndexedDBDataSource(CredentialStorage.storageKey)
 			),
@@ -36,9 +36,7 @@ export class WalletService {
 			),
 			mt: new MerkleTreeIndexedDBStorage(40),
 			states: new EthStateStorage(defaultEthConnectionConfig[0])
-
 		};
-
 		const resolvers = new CredentialStatusResolverRegistry();
 		resolvers.register(
 			CredentialStatusType.SparseMerkleTreeProof,
@@ -56,16 +54,8 @@ export class WalletService {
 			CredentialStatusType.Iden3commRevocationStatusV1,
 			new AgentResolver()
 		);
-
-
 		const credWallet = new CredentialWallet(dataStorage, resolvers);
-		let wallet = new IdentityWallet(kms, dataStorage, credWallet);
-
-		return {
-			wallet: wallet,
-			credWallet: credWallet,
-			kms: kms,
-			dataStorage: dataStorage
-		}
+		const idenWallet = new IdentityWallet(kms, dataStorage, credWallet);
+		return { idenWallet, credWallet, kms, dataStorage };
 	}
 }

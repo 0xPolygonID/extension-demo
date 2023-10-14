@@ -8,13 +8,13 @@ import TextField from '@mui/material/TextField';
 import AssignmentReturnedIcon from '@mui/icons-material/AssignmentReturned';
 import AddIcon from '@mui/icons-material/Add';
 import { DEFAULT_ACCOUNT_NAME } from '../constants';
-import { IdentityServices } from '../services/Identity.services';
+import { IdentityService } from '../services/Identity.service';
 import { ExtensionService } from '../services/Extension.service';
 
 export const Welcome = () => {
 	const navigate = useNavigate();
 	const { state } = useLocation();
-	const [isIdentityPresent, setIdentity] = useState(false);
+	const [isIdentityPresent, setIdentityPresent] = useState(false);
 	const [step, setStep] = useState('step1');
 	const [input, setInput] = useState({
 		password: '',
@@ -26,10 +26,11 @@ export const Welcome = () => {
 	})
 
 	useEffect(() => {
-		const { dataStorage } = ExtensionService.getExtensionServiceInstance();
-		dataStorage.identity.getAllIdentities().then(
-			identities => setIdentity(!!identities.length)
-		).catch(err => console.log(err));
+		(async () => {
+			const { dataStorage } = await ExtensionService.getInstance();
+			const identities = await dataStorage.identity.getAllIdentities();
+			setIdentityPresent(identities.length > 0);
+		})().catch(console.error);
 	}, [])
 
 	const onInputChange = (e) => {
@@ -42,10 +43,9 @@ export const Welcome = () => {
 	}
 
 	const validateInput = e => {
-		let { name, value } = e.target;
+		const { name, value } = e.target;
 		setError(prev => {
 			const stateObj = { ...prev, [name]: "" };
-
 			switch (name) {
 				case "password":
 					if (!value) {
@@ -56,7 +56,6 @@ export const Welcome = () => {
 						stateObj["confirmPassword"] = input.confirmPassword ? "" : error.confirmPassword;
 					}
 					break;
-
 				case "confirmPassword":
 					if (!value) {
 						stateObj[name] = "Please enter Confirm Password.";
@@ -64,11 +63,9 @@ export const Welcome = () => {
 						stateObj[name] = "Password and Confirm Password does not match.";
 					}
 					break;
-
 				default:
 					break;
 			}
-
 			return stateObj;
 		});
 	}
@@ -81,13 +78,23 @@ export const Welcome = () => {
 	}
 	async function handleClickCreatePassword() {
 		if (!isIdentityPresent) {
-			const identity = await IdentityServices.createIdentity();
-			localStorage.setItem('accounts', JSON.stringify([{ name: DEFAULT_ACCOUNT_NAME, did: identity.did.string(), isActive: true }]));
+			const identity = await IdentityService.createIdentity();
+			localStorage.setItem(
+				'accounts',
+				JSON.stringify([
+					{
+						name: DEFAULT_ACCOUNT_NAME,
+						did: identity.did.string(),
+						isActive: true,
+					}
+				])
+			);
 			window.dispatchEvent(new Event("storage"));
-			if (state)
+			if (state) {
 				navigate(state);
-			else
+			} else {
 				navigate('/');
+			}
 		}
 	}
 	return (
@@ -97,9 +104,7 @@ export const Welcome = () => {
 				<h3>Welcome to PolygonID</h3>
 				<p>Connecting you to Ethereum and</p>
 				<p>the decentralized network...</p>
-
 				<p style={{ paddingTop: 20, paddingBottom: 30 }}>We're glad to see you.</p>
-
 				<Button
 					className={'blue-button'}
 					color="primary"
@@ -107,47 +112,42 @@ export const Welcome = () => {
 					variant="outlined"
 					onClick={handleClickStart}
 				>Let's get started</Button>
-
-			</div>
-			}
-			{
-				step === 'step2' && <div className={'welcome-step2'}>
-					<img src={FullLogo} alt={''} />
-					<h3>First time in PolygonID?</h3>
-					<div className={'block-wrap'}>
-						<div className={'section'}>
-							<Icon component={AssignmentReturnedIcon} color={'primary'} />
-							<h5>No, I have Secret Recovery Phrase</h5>
-							<p style={{ fontSize: 12 }}>Access your wallet with your Secret Recovery Phrase</p>
-							<Button
-								className={'blue-button'}
-								color="primary"
-								size="small"
-								variant="outlined"
-							>Import an existing wallet</Button>
-						</div>
-						<div className={'section'}>
-							<Icon component={AddIcon} color={'primary'} />
-							<h5>Yes, let's set up!</h5>
-							<p style={{ fontSize: 12 }}>This will create a new wallet</p>
-							<Button
-								className={'blue-button'}
-								color="primary"
-								size="small"
-								variant="outlined"
-								onClick={handleClickCreate}
-							>Create a new wallet</Button>
-						</div>
+			</div>}
+			{step === 'step2' && <div className={'welcome-step2'}>
+				<img src={FullLogo} alt={''} />
+				<h3>First time in PolygonID?</h3>
+				<div className={'block-wrap'}>
+					<div className={'section'}>
+						<Icon component={AssignmentReturnedIcon} color={'primary'} />
+						<h5>No, I have Secret Recovery Phrase</h5>
+						<p style={{ fontSize: 12 }}>Access your wallet with your Secret Recovery Phrase</p>
+						<Button
+							className={'blue-button'}
+							color="primary"
+							size="small"
+							variant="outlined"
+						>Import an existing wallet</Button>
+					</div>
+					<div className={'section'}>
+						<Icon component={AddIcon} color={'primary'} />
+						<h5>Yes, let's set up!</h5>
+						<p style={{ fontSize: 12 }}>This will create a new wallet</p>
+						<Button
+							className={'blue-button'}
+							color="primary"
+							size="small"
+							variant="outlined"
+							onClick={handleClickCreate}
+						>Create a new wallet</Button>
 					</div>
 				</div>
-			}
-
+			</div>}
 			{step === 'step3' && <div className={'welcome-step3'}>
 				<img src={FullLogo} alt={''} />
 				<h1 style={{ textAlign: 'left' }}>Create password</h1>
 				<TextField
 					className={'pas-input'}
-					error={error.password}
+					error={!!error.password}
 					name='password'
 					id="outlined-error-helper-text"
 					label="New password (8 characters min)"
@@ -159,7 +159,7 @@ export const Welcome = () => {
 				/>
 				<TextField
 					className={'pas-input'}
-					error={error.confirmPassword}
+					error={!!error.confirmPassword}
 					id="outlined-error-helper-text"
 					name="confirmPassword"
 					label="Confirm password"
@@ -169,19 +169,15 @@ export const Welcome = () => {
 					onChange={onInputChange}
 					onBlur={validateInput}
 				/>
-
 				<Button
 					className={'blue-button'}
 					color="primary"
 					size="small"
 					variant="outlined"
 					onClick={handleClickCreatePassword}
-					disabled={error.confirmPassword || error.password}
+					disabled={!!error.confirmPassword || !!error.password}
 				>Create</Button>
-
 			</div>}
-
 		</div>
-
 	);
 }

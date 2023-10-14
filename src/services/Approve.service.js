@@ -5,11 +5,10 @@ import { AuthHandler, FetchHandler, core } from '@0xpolygonid/js-sdk';
 const { DID } = core;
 
 export async function approveMethod(msgBytes) {
-  const { packageMgr, proofService, credWallet } = ExtensionService.getExtensionServiceInstance();
-
-  let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
-  let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
-  const authRes = await authHandler.handleAuthorizationRequest(_did, msgBytes);
+  const { packageMgr, proofService, credWallet } = await ExtensionService.getInstance();
+  const authHandler = new AuthHandler(packageMgr, proofService, credWallet);
+  const did = DID.parse(LocalStorageServices.getActiveAccountDid());
+  const authRes = await authHandler.handleAuthorizationRequest(did, msgBytes);
   console.log(authRes);
   const config = {
     headers: {
@@ -24,8 +23,8 @@ export async function approveMethod(msgBytes) {
 }
 
 export async function receiveMethod(msgBytes) {
-  const { packageMgr, credWallet } = ExtensionService.getExtensionServiceInstance();
-  let fetchHandler = new FetchHandler(packageMgr);
+  const { packageMgr, credWallet } = await ExtensionService.getInstance();
+  const fetchHandler = new FetchHandler(packageMgr);
   const credentials = await fetchHandler.handleCredentialOffer(msgBytes);
   console.log(credentials);
   await credWallet.saveAll(credentials);
@@ -33,7 +32,7 @@ export async function receiveMethod(msgBytes) {
 }
 
 export async function proofMethod(msgBytes) {
-  const { authHandler } = ExtensionService.getExtensionServiceInstance();
+  const { authHandler } = await ExtensionService.getInstance();
   const authRequest = await authHandler.parseAuthorizationRequest(msgBytes);
   const { body } = authRequest;
   const { scope = [] } = body;

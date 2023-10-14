@@ -9,34 +9,36 @@ export const Home = () => {
   const [accounts, setAccounts] = useState([]);
   const [credentials, setCredentials] = useState([]);
 
-  useEffect(() => {
-	  window.addEventListener('storage', () => {
-		  console.log("Change to local storage!");
-		  let accounts = JSON.parse(localStorage.getItem('accounts'));
-		  setAccounts(accounts ? accounts : []);
-		
-	  })
-	  let _accounts = JSON.parse(localStorage.getItem('accounts'));
-	  if(!_accounts || _accounts.length <= 0) {
-		  navigate('/welcome');
-	  } else {
-		  setAccounts(_accounts);
-	  }
-	  getCredentials();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const getCredentials = async () => {
-    const { credWallet } = await ExtensionService.getExtensionServiceInstance();
-	// todo find by query
+    const { credWallet } = await ExtensionService.getInstance();
+    // todo find by query
     const credentials = await credWallet.list();
     setCredentials(credentials);
   };
 
+  useEffect(() => {
+	  const accounts = JSON.parse(localStorage.getItem('accounts'));
+	  if(!accounts || accounts.length <= 0) {
+		  navigate('/welcome');
+	  } else {
+		  setAccounts(accounts);
+	  }
+    window.addEventListener("storage", () => {
+      console.log("Change to local storage!");
+      const accounts = JSON.parse(localStorage.getItem("accounts"));
+      setAccounts(accounts ? accounts : []);
+      if(!accounts || accounts.length <= 0) {
+        navigate('/welcome');
+      }
+    });
+	  getCredentials().catch(console.error);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleCredentialDelete = async (credentialId) => {
-    const { credWallet } = ExtensionService.getExtensionServiceInstance();
+    const { credWallet } = await ExtensionService.getInstance();
     await credWallet.remove(credentialId);
-    await getCredentials();
+    await getCredentials().catch(console.error);
   };
 
   return (

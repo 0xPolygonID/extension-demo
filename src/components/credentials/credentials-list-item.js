@@ -1,10 +1,10 @@
 import React from "react";
+import { IconButton } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { hideString } from "../../utils";
 import "./styles.css";
-import { IconButton } from "@mui/material";
 
 export const CredentialsListItem = (props) => {
   const { name, issuer, credential } = props;

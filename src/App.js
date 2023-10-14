@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Home, Welcome, Auth, NewAccount } from './pages';
 import { Routes, Route } from 'react-router-dom';
 import { ExtensionService } from './services/Extension.service';
-import { INIT } from './constants';
 import './App.css';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -11,19 +10,13 @@ function App() {
   const [error, setError] = useState('');
   
   useEffect(()=>{
-    const init = async () => {
-      const { status } = await ExtensionService.init();
-      if(status === INIT)
-        setInited(true);
-      else
-        setError('Extension services cant be initialized');
-    }
-    init()
-        .catch(error => {
-          setError(error)
-          console.log(error);
-        });
-  },[])
+    ExtensionService.getInstance()
+      .then(() => setInited(true))
+      .catch(err => {
+        setError(err.message)
+        console.error(err);
+      });
+  }, [])
 
   return (
     <div className="App">

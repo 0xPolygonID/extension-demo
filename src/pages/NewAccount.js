@@ -19,15 +19,13 @@ export const NewAccount = ()=> {
 	function handleClickCancel(){
 		navigate('/');
 	}
-	async function handleClickCreateAccount() {
-		const { did } = await WalletService.createWallet();
-		let existingAccounts = JSON.parse(localStorage.getItem("accounts"));
-		
-		if(existingAccounts !== null || existingAccounts.length !==0){
+	function handleClickCreateAccount() {
+		const { did } = WalletService.createWallet();
+		const existingAccounts = JSON.parse(localStorage.getItem("accounts"));
+		if (existingAccounts !== null || existingAccounts.length !== 0){
 			existingAccounts.push({name: input.account, did: did.string()});
 			localStorage.setItem("accounts", JSON.stringify(existingAccounts));
-		}
-		else {
+		} else {
 			localStorage.setItem('accounts',JSON.stringify([{name: input.account, did: did.string()}]));
 		}
 		window.dispatchEvent(new Event("storage"));
