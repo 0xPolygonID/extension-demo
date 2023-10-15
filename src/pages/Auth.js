@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import { approveMethod, proofMethod, receiveMethod } from "../services";
 import FullLogo from "../ui/icons/Primary_ Logo.svg";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
 import { LinearProgress } from "@mui/material";
@@ -27,13 +27,27 @@ const getTitle = (requestType) => {
   }
 };
 
+const useQuery = (key) => {
+  const { search } = useLocation();
+  return React.useMemo(
+    () => new URLSearchParams(search).get(key),
+    [search, key]
+  );
+};
+
 export const Auth = () => {
   const navigate = useNavigate();
+  const { search, pathname } = useLocation();
+  const dataType = useQuery("type");
+  const payload = useQuery("payload");
   const [error, setError] = useState(null);
   const [requestType, setRequestType] = useState("");
   const [data, setData] = useState(null);
   const [msgBytes, setMsgBytes] = useState(null); // [msgBytes, setMsgBytes
   const [isReady, setIsReady] = useState(true);
+
+  console.log("dataType", dataType);
+  console.log("payload", payload);
 
   const detectRequest = (unpackedMessage) => {
     const { type, body } = unpackedMessage;
@@ -49,11 +63,6 @@ export const Auth = () => {
   };
 
   useEffect(() => {
-    const { pathname, search, searchParams } = new URL(window.location);
-    const dataType = searchParams.get("type");
-    const payload = searchParams.get("payload");
-    console.log("dataType", dataType);
-    console.log("payload", payload);
     (async () => {
       const { packageMgr, dataStorage } = await ExtensionService.getInstance();
       const identity = dataStorage.identity.getAllIdentities()
