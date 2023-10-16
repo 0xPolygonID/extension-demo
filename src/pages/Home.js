@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AccountInfo } from "../components/account-info";
 import { CredentialsInfo } from "../components/credentials";
+import DealList from "../components/DealList";
 import { useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { Tabs, Tab } from "@mui/material";
@@ -12,7 +13,7 @@ export const Home = () => {
   const [credentials, setCredentials] = useState([]);
 
   // Tab state
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState("1");
 
   const getCredentials = async () => {
     const { credWallet } = await ExtensionService.getInstance();
@@ -54,11 +55,11 @@ export const Home = () => {
           <AccountInfo accounts={accounts} />
           <TabContext value={tabIndex}>
             <Tabs value={tabIndex} onChange={(e, index) => setTabIndex(index)}>
-              <Tab label="Deals" value="1"/>
-              <Tab label="History" value="2"/>
+              <Tab label="Deals" value="1" />
+              <Tab label="History" value="2" />
             </Tabs>
-            <TabPanel value="1" index={0}>
-              <p>Deals</p>
+            <TabPanel sx={{ padding: 0 }} value="1" index={0}>
+              <DealList />
             </TabPanel>
             <TabPanel value="2" index={1}>
               <CredentialsInfo
