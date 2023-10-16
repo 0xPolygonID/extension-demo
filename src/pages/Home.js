@@ -58,10 +58,11 @@ export const Home = () => {
               <Tab label="Deals" value="1" />
               <Tab label="History" value="2" />
             </Tabs>
+
             <TabPanel sx={{ padding: 0 }} value="1" index={0}>
               <DealList />
             </TabPanel>
-            <TabPanel value="2" index={1}>
+            <TabPanel sx={{ padding: 0 }} value="2" index={1}>
               <CredentialsInfo
                 credentials={credentials}
                 onDeleteCredential={handleCredentialDelete}

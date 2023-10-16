@@ -6,7 +6,6 @@ import {
   Chip,
   Button,
 } from "@mui/material";
-import "./styles.css";
 
 export default function DealList() {
   const mockData = [
@@ -28,38 +27,31 @@ export default function DealList() {
   ];
 
   return (
-    <div>
-      <Table sx={{ width: "100%" }}>
-        <TableBody>
-          {mockData.map((deal, index) => (
-            <div>
-              <TableRow key={index}>
-                <div className="deal-item">
-                  <TableCell>
-                    <Chip
-                      sx={{ minWidth: "50px" }}
-                      label={deal.discount}
-                      variant="outlined"
-                    />
-                  </TableCell>
-                  <TableCell>{deal.description}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      size="small"
-                      disabled={deal.unlocked}
-                    >
-                      {deal.unlocked ? "Unlocked" : "Unlock"}
-                    </Button>
-                  </TableCell>
-                </div>
-              </TableRow>
-              {/* {index !== mockData.length - 1 && <Divider />} */}
-            </div>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <Table sx={{ width: "100%" }}>
+      <TableBody>
+        {mockData.map((deal, index) => (
+          <TableRow key={index}>
+            <TableCell>
+              <Chip
+                sx={{ minWidth: "50px", fontWeight: "bold" }}
+                label={deal.discount}
+                variant="outlined"
+              />
+            </TableCell>
+            <TableCell sx={{ fontSize: "14px" }}>{deal.description}</TableCell>
+            <TableCell align="right">
+              <Button
+                variant="contained"
+                color="success"
+                size="small"
+                disabled={deal.unlocked}
+              >
+                {deal.unlocked ? "Unlocked" : "Unlock"}
+              </Button>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
