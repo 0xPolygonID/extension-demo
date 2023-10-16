@@ -1,21 +1,19 @@
 import React from 'react';
 import { hideString } from "../../utils";
 import './styles.css';
-// import MoreVertIcon from '@mui/icons-material/MoreVert';
-// import Icon from '@mui/material/Icon';
 import Tooltip from '@mui/material/Tooltip';
 export const AccountInfo = (props)=> {
 	const currentAccount = props.accounts[0]
 	return (
     <div className={"menu-bar"}>
-      {/* <div className={'account-info'}>
+      <div className={'account-info'}>
 				<button className="connected-status-indicator" onClick={()=>{}}>
 					<div className={'color-indicator'}>
 						<span className="color-indicator__inner-circle" />
 					</div>
 					<div className="connected-status-indicator__text">Connected</div>
 				</button>
-			</div> */}
+			</div>
       <div className={"selected-account"}>
         <div style={{ display: "inline" }}>
           <Tooltip disableFocusListener title="Copy to clipboard">

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { HeaderComponent } from "../components/app-header";
 import { AccountInfo } from "../components/account-info";
 import { CredentialsInfo } from "../components/credentials";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +44,6 @@ export const Home = () => {
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
 	  { accounts.length <=0 && <p>Redirecting...</p> }
 	  { accounts.length > 0 && <div>
-        <HeaderComponent />
         <AccountInfo accounts={accounts} />
         <CredentialsInfo
           credentials={credentials}
