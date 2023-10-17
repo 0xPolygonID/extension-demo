@@ -1,11 +1,11 @@
 .menu-bar {
-	display: grid;
-	grid-template-columns: 30% minmax(30%, 1fr) 30%;
+	display: flex;
+	align-items: center;
+	position: relative;
 	-webkit-column-gap: 5px;
 	-moz-column-gap: 5px;
 	column-gap: 5px;
 	padding: 0 8px;
-	border-bottom: 1px solid #d6d9dc;
 	height: 64px;
 }
 

@@ -10,8 +10,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "../components/ui/tabs";
-// import { Tabs, Tab } from "@mui/material";
-// import { TabPanel, TabContext } from "@mui/lab";
 
 export const Home = () => {
   const navigate = useNavigate();
