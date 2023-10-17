@@ -1,10 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 @import 'header.styles.css';
 @import 'welcome.styles.css';
 @import 'newAccount.css';
 @import 'authPage.css';
+@import 'globals.css';
 
 *{
   box-sizing: border-box;
