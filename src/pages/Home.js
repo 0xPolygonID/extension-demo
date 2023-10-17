@@ -4,8 +4,14 @@ import { CredentialsInfo } from "../components/credentials";
 import DealList from "../components/DealList";
 import { useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
-import { Tabs, Tab } from "@mui/material";
-import { TabPanel, TabContext } from "@mui/lab";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../components/ui/tabs";
+// import { Tabs, Tab } from "@mui/material";
+// import { TabPanel, TabContext } from "@mui/lab";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -53,22 +59,21 @@ export const Home = () => {
       {accounts.length > 0 && (
         <div>
           <AccountInfo accounts={accounts} />
-          <TabContext value={tabIndex}>
-            <Tabs value={tabIndex} onChange={(e, index) => setTabIndex(index)}>
-              <Tab label="Deals" value="1" />
-              <Tab label="History" value="2" />
-            </Tabs>
-
-            <TabPanel sx={{ padding: 0 }} value="1" index={0}>
+          <Tabs defaultValue="deals" className="w-[400px]">
+            <TabsList className="ml-3">
+              <TabsTrigger value="deals">Deals</TabsTrigger>
+              <TabsTrigger value="history">History</TabsTrigger>
+            </TabsList>
+            <TabsContent value="deals">
               <DealList />
-            </TabPanel>
-            <TabPanel sx={{ padding: 0 }} value="2" index={1}>
+            </TabsContent>
+            <TabsContent value="history">
               <CredentialsInfo
                 credentials={credentials}
                 onDeleteCredential={handleCredentialDelete}
               />
-            </TabPanel>
-          </TabContext>
+            </TabsContent>
+          </Tabs>
         </div>
       )}
     </div>

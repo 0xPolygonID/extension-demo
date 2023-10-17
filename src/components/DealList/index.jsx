@@ -1,11 +1,11 @@
+import { Badge } from "../ui/badge"
 import {
   Table,
   TableBody,
-  TableRow,
   TableCell,
-  Chip,
-  Button,
-} from "@mui/material";
+  TableRow,
+} from "../ui/table";
+import { Button } from "../ui/button";
 
 export default function DealList() {
   const mockData = [
@@ -27,25 +27,18 @@ export default function DealList() {
   ];
 
   return (
-    <Table sx={{ width: "100%" }}>
+    <Table>
       <TableBody>
         {mockData.map((deal, index) => (
           <TableRow key={index}>
             <TableCell>
-              <Chip
-                sx={{ minWidth: "50px", fontWeight: "bold" }}
-                label={deal.discount}
+              <Badge
                 variant="outlined"
-              />
+              >{deal.discount}</Badge>
             </TableCell>
             <TableCell sx={{ fontSize: "14px" }}>{deal.description}</TableCell>
             <TableCell align="right">
-              <Button
-                variant="contained"
-                color="success"
-                size="small"
-                disabled={deal.unlocked}
-              >
+              <Button disabled={deal.unlocked}>
                 {deal.unlocked ? "Unlocked" : "Unlock"}
               </Button>
             </TableCell>
