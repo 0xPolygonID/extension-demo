@@ -1,14 +1,9 @@
-import { Badge } from "../ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
-} from "../ui/table";
+import { Badge } from "../ui/badge";
+import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 
 export default function DealList() {
-  const mockData = [
+  const mockDataA = [
     {
       discount: "10%",
       description: "Bought coffee in the past week",
@@ -26,25 +21,59 @@ export default function DealList() {
     },
   ];
 
+  const mockDataB = [
+    {
+      discount: "50%",
+      description: "Spent over $1000 in the past week",
+      unlocked: false,
+    },
+    {
+      discount: "$10",
+      description: "Bought sneakers in the past month",
+      unlocked: false,
+    },
+  ];
+
   return (
-    <Table>
-      <TableBody>
-        {mockData.map((deal, index) => (
-          <TableRow key={index}>
-            <TableCell>
-              <Badge
-                variant="outlined"
-              >{deal.discount}</Badge>
-            </TableCell>
-            <TableCell sx={{ fontSize: "14px" }}>{deal.description}</TableCell>
-            <TableCell align="right">
-              <Button disabled={deal.unlocked}>
-                {deal.unlocked ? "Unlocked" : "Unlock"}
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <div>
+      <span className="m-4 font-bold">Available deals ({mockDataA.length})</span>
+      <Table>
+        <TableBody>
+          {mockDataA.map((deal, index) => (
+            <TableRow key={index}>
+              <TableCell>
+                <Badge variant="outlined">{deal.discount}</Badge>
+              </TableCell>
+              <TableCell sx={{ fontSize: "14px" }}>
+                {deal.description}
+              </TableCell>
+              <TableCell align="right">
+                <Button disabled={deal.unlocked}>
+                  {deal.unlocked ? "Unlocked" : "Unlock"}
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <span className="m-4 font-bold">Other deals ({mockDataB.length})</span>
+      <Table>
+        <TableBody>
+          {mockDataB.map((deal, index) => (
+            <TableRow key={index}>
+              <TableCell>
+                <Badge variant="outlined">{deal.discount}</Badge>
+              </TableCell>
+              <TableCell sx={{ fontSize: "14px" }}>
+                {deal.description}
+              </TableCell>
+              <TableCell align="right">
+                <Button>Explore</Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
