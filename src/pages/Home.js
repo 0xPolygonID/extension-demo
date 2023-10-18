@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AccountInfo } from "../components/account-info";
-import { CredentialsInfo } from "../components/credentials";
+// import { CredentialsInfo } from "../components/credentials";
+import PurchaseHistory from "../components/History";
 import DealList from "../components/DealList";
 import { useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
@@ -66,10 +67,11 @@ export const Home = () => {
               <DealList />
             </TabsContent>
             <TabsContent value="history">
-              <CredentialsInfo
+              <PurchaseHistory />
+              {/* <CredentialsInfo
                 credentials={credentials}
                 onDeleteCredential={handleCredentialDelete}
-              />
+              /> */}
             </TabsContent>
           </Tabs>
         </div>
