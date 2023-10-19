@@ -10,6 +10,8 @@
     "@mui/lab": "^5.0.0-alpha.148",
     "@mui/material": "^5.11.6",
     "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@testing-library/jest-dom": "^5.16.5",
@@ -60,6 +62,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "tailwindcss": "^3.3.3"
   }
 }
