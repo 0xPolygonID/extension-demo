@@ -32,3 +32,7 @@ If you pull down new changes or make a change to the extension's files locally, 
 
 # Note
 contentScripts.js -  listening document events, and handle event from site where `authEvent` will fire 
+
+# Important: this is demo. Not for use in production.
+To run demo also, make sure that  file src/constants/common.constants contains a valid rpc url.
+export const RPC_URL = '';

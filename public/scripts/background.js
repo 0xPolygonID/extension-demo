@@ -3,19 +3,25 @@
 // and contentScript files.
 // For more information on background script,
 // See https://developer.chrome.com/extensions/background_pages
-
-chrome.runtime.onMessage.addListener(request => {
+let currentWindow = null;
+chrome.windows.onRemoved.addListener(
+  (windowId) => {
+    if (currentWindow?.id === windowId) {
+      currentWindow = null;
+    }
+  }
+)
+chrome.runtime.onMessage.addListener(async request => {
   if (request.type === "OpenAuth") {
-    // console.log('OpenPopup');
-    // alert(request.href);
-    // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      // query the active tab, which will be only one tab
-      //and inject the script in it
-      // chrome.tabs.executeScript(tabs[0].id, {file: "content_script.js"});
-    // });
-    console.log(request.href);
+    if (currentWindow) {
+      await chrome.windows.remove(currentWindow.id);
+    }
+    const data = request.href.includes('?i_m=')
+      ? { type: 'base64', payload: request.href.split('?i_m=')[1] }
+      : { type: 'link', payload: decodeURIComponent(request.href.split('?request_uri=')[1]) };
+
     chrome.windows.create({
-      url: chrome.runtime.getURL(`index.html#/auth?i_m=${request.href.split('?i_m=')[1]}`),
+      url: chrome.runtime.getURL(`index.html#/auth?type=${data.type}&payload=${data.payload}`),
       type: "popup",
       focused: true,
       width: 390,
@@ -27,5 +33,4 @@ chrome.runtime.onMessage.addListener(request => {
     })
     
   }
-})
-
+});

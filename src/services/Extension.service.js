@@ -1,4 +1,4 @@
-import { proving } from '@iden3/js-jwz/dist/esm_esbuild/index';
+import  {proving} from '@iden3/js-jwz';
 import { CircuitStorageInstance } from './CircuitStorage';
 import { WalletService } from './Wallet.service';
 import { defaultEthConnectionConfig, INIT } from '../constants';
