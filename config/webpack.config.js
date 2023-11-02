@@ -347,8 +347,10 @@ module.exports = function (webpackEnv) {
             multiple: [
               { search: 'new Function("try {return this===window;}catch(e){ return false;}")', replace: 'true' },
               { search: 'new Function("return this;")().Promise', replace: 'Promise' },
-              { search: 'await buildBn1282()', replace: 'await buildBn1282(true)' },
+              { search: 'await buildBn128()', replace: 'await buildBn128(true)' },
               { search: 'await buildBn128(singleThread', replace: 'await buildBn128(true' },
+              { search: 'singleThread: singleThread ? true : false', replace: 'singleThread: true' },
+              { search: 'if (singleThread)', replace: 'if (true)' },
             ]
           }
         },
