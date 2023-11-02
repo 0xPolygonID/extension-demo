@@ -347,8 +347,6 @@ module.exports = function (webpackEnv) {
             multiple: [
               { search: 'new Function("try {return this===window;}catch(e){ return false;}")', replace: 'true' },
               { search: 'new Function("return this;")().Promise', replace: 'Promise' },
-              { search: 'await buildBn128()', replace: 'await buildBn128(true)' },
-              { search: 'await buildBn128(singleThread', replace: 'await buildBn128(true' },
               { search: 'singleThread: singleThread ? true : false', replace: 'singleThread: true' },
               { search: 'if (singleThread)', replace: 'if (true)' },
             ]
@@ -364,7 +362,7 @@ module.exports = function (webpackEnv) {
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
-          // back to the "file" loader at the end of the loader list.
+          // back to the "file" loader at the end oґf the loader list.
           oneOf: [
             // TODO: Merge this config once `image/avif` is in the mime-db
             // https://github.com/jshttp/mime-db
