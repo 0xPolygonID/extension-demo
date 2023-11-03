@@ -100,14 +100,30 @@ export const Auth = () => {
   async function handleClickReject() {
     navigate("/");
   }
+
+   window.addEventListener('message', (event) => {
+    console.log('back from sandbox ' + JSON.stringify(event.data.result));
+    const result = event.data.result;
+  });
+
   async function handleClickApprove() {
     setIsReady(false);
-    const result = await approveMethod(msgBytes);
-    if (result.code !== "ERR_NETWORK") navigate("/");
-    else {
-      setError(result.message);
-      setIsReady(true);
-    }
+    console.log('in handleClickApprove');
+    const message = {
+      msgBytes,
+      type: 'approveMethod',
+    };
+    
+    document.getElementById('theFrame').contentWindow.postMessage(message, '*');
+    // const now = Date.now();
+    // const result = await approveMethod(msgBytes);
+    // const afterAppr = Date.now();
+    // console.log('approve time' + (afterAppr - now));
+    // if (result.code !== "ERR_NETWORK") navigate("/");
+    // else {
+    //   setError(result.message);
+    //   setIsReady(true);
+    // }
   }
   async function handleClickProof() {
     setIsReady(false);

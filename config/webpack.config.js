@@ -347,8 +347,8 @@ module.exports = function (webpackEnv) {
             multiple: [
               { search: 'new Function("try {return this===window;}catch(e){ return false;}")', replace: 'true' },
               { search: 'new Function("return this;")().Promise', replace: 'Promise' },
-              { search: 'singleThread: singleThread ? true : false', replace: 'singleThread: true' },
-              { search: 'if (singleThread)', replace: 'if (true)' },
+              // { search: 'singleThread: singleThread ? true : false', replace: 'singleThread: true' },
+              // { search: 'if (singleThread)', replace: 'if (true)' },
             ]
           }
         },

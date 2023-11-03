@@ -36,3 +36,9 @@ contentScripts.js -  listening document events, and handle event from site where
 # Important: this is demo. Not for use in production.
 To run demo also, make sure that  file src/constants/common.constants contains a valid rpc url.
 export const RPC_URL = '';
+
+# Sandbox 
+To make `ffjavascript` works in multy threads (running `Worker` from `blob:`, which is not allowed in `mv3`), 
+we can use sandbox inside `ifame`. This branch shows haw to add sandox and configure events to/from `iframe`.
+
+Doc: https://developer.chrome.com/docs/extensions/mv3/sandboxingEval/

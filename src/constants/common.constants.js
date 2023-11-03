@@ -1,5 +1,5 @@
 export const RHS_URL = 'https://rhs-staging.polygonid.me';
-export const RPC_URL = '';
+export const RPC_URL = 'https://polygon-mumbai.g.alchemy.com/v2/6S0RiH55rrmlnrkMiEm0IL2Zy4O-VrnQ';
 
 export const defaultEthConnectionConfig =  [{
 	url: RPC_URL,

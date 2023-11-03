@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+ <script src="./js-sdk.js"></script>    
+
+ <script type="module">
+    console.log(PolygonIdSdk);
+
+     // Set up message event handler:
+    window.addEventListener('message', async (event) => {
+        console.log(event.data);
+        console.log('in sandbox:::' + JSON.stringify(event.data));
+        event.source.postMessage({ result: 'sendboxResult' }, event.origin);
+    });
+ </script>
+ </body> 
+</html> 

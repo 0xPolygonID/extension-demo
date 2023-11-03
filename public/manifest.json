@@ -31,13 +31,21 @@
     "tabs",
     "activeTab"
   ],
-  "web_accessible_resources": [{
-    "resources": ["index.html"],
-    "matches": [],
-    "extension_ids": []
-  }],
-
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "index.html"
+      ],
+      "matches": [],
+      "extension_ids": []
+    }
+  ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'"
+  },
+  "sandbox": {
+    "pages": [
+      "sandbox.html"
+    ]
   }
 }
