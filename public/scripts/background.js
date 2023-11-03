@@ -28,8 +28,9 @@ chrome.runtime.onMessage.addListener(async request => {
       height: 600,
       top: 0,
       left: request.windowWidth - 390,
-    }, (window) => {
-      currentWindow = window;
-    });
+    }, () => {
+      console.log("Opened popup!")
+    })
+    
   }
 });

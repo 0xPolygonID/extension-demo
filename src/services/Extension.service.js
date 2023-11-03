@@ -1,4 +1,4 @@
-import * as JWZ from '@iden3/js-jwz/dist/esm_esbuild/index';
+import  {proving} from '@iden3/js-jwz';
 import { CircuitStorageInstance } from './CircuitStorage';
 import { WalletService } from './Wallet.service';
 import { defaultEthConnectionConfig, INIT } from '../constants';
@@ -16,7 +16,7 @@ import {
 } from '@0xpolygonid/js-sdk';
 
 
-const { proving } = JWZ;
+// const { proving } = JWZ;
 export class ExtensionService {
 	static instanceES;
 	static async init() {

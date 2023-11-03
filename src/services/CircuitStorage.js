@@ -1,5 +1,4 @@
 import { CircuitStorage, IndexedDBDataSource } from '@0xpolygonid/js-sdk';
-
 export class CircuitStorageInstance {
   static async init() {
     if (!this.instanceCS) {
