@@ -347,8 +347,8 @@ module.exports = function (webpackEnv) {
             multiple: [
               { search: 'new Function("try {return this===window;}catch(e){ return false;}")', replace: 'true' },
               { search: 'new Function("return this;")().Promise', replace: 'Promise' },
-              { search: 'singleThread: singleThread ? true : false', replace: 'singleThread: true' },
-              { search: 'if (singleThread)', replace: 'if (true)' },
+              { search: 'new Worker$1(workerSource)', replace: 'new Worker$1("./threadman_thread.js")' },
+              { search: 'new Worker(workerSource)', replace: 'new Worker("./threadman_thread.js")' },
             ]
           }
         },
