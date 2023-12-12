@@ -14,4 +14,3 @@ config.optimization.minimize = false;
 
 // JS
 config.output.filename = '[name].js';
-config.plugins[5].options.filename = '[name].css';
