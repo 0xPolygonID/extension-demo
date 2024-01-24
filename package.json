@@ -2,11 +2,14 @@
   "name": "my-app",
   "version": "0.3.2",
   "private": true,
+  "browser": {
+    "crypto": false
+  },
   "dependencies": {
-    "@0xpolygonid/js-sdk": "1.4.2",
+    "@0xpolygonid/js-sdk": "1.7.2",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@iden3/js-jwz": "1.1.2",
+    "@iden3/js-jwz": "1.2.1",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.6",
     "@svgr/webpack": "^5.5.0",

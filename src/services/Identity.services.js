@@ -1,6 +1,7 @@
 import { RHS_URL } from "../constants";
 import { ExtensionService } from "./Extension.service";
 import { core, CredentialStatusType } from "@0xpolygonid/js-sdk";
+
 export class IdentityServices {
   static instanceIS;
   static async createIdentity() {

@@ -39,7 +39,7 @@ export class ExtensionService {
 		let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
 		
 		if(!this.instanceCS) {
-			this.instanceES = {
+					this.instanceES = {
 				packageMgr,
 				proofService,
 				credWallet,

@@ -8,6 +8,8 @@ config.optimization.splitChunks = {
     default: false,
   },
 };
+
+config.resolve.fallback = { ...config.resolve.fallback, "crypto": false }
 // Move runtime into bundle instead of separate file
 config.optimization.runtimeChunk = false;
 config.optimization.minimize = false;
