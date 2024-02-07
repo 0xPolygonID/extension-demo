@@ -9,14 +9,15 @@ export class IdentityServices {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
 
       let identity = await wallet.createIdentity({
-        method: core.DidMethod.PolygonId,
-        blockchain: core.Blockchain.Polygon,
-        networkId: core.NetworkId.Mumbai,
+        method: 'polygonid',
+        blockchain: 'polygon',
+        networkId: 'mumbai',
         revocationOpts: {
           type: CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
           id: RHS_URL
         }
       });
+    
       console.log("!!!!!!!!!!!!!!!!", identity);
       this.instanceIS = identity;
       return this.instanceIS;

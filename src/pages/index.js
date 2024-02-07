@@ -5,9 +5,17 @@ export * from "./Auth";
 export * from "./NewAccount";
 console.log("core registration");
 core.registerDidMethodNetwork({
+  method: core.DidMethod.PolygonId,
+  blockchain: "linea",
+  chainId: 59140,
+  network: "testnet",
+  networkFlag: 0b0100_0000 | 0b0000_0011,
+});
+
+core.registerDidMethodNetwork({
   method: core.DidMethod.Iden3,
   blockchain: "linea",
   chainId: 59140,
   network: "testnet",
-  networkFlag: 0b0100_0000 | 0b0000001,
+  networkFlag: 0b0100_0000 | 0b0000_0001,
 });

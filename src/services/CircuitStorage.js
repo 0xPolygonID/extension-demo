@@ -21,6 +21,9 @@ export class CircuitStorageInstance {
         const sig_w = await fetch("./credentialAtomicQuerySigV2/circuit.wasm")
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
+          const v3_w = await fetch("./credentialAtomicQueryV3-beta.0/circuit.wasm")
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => new Uint8Array(buffer));
 
         const auth_z = await fetch("./AuthV2/circuit_final.zkey")
           .then((response) => response.arrayBuffer())
@@ -35,7 +38,9 @@ export class CircuitStorageInstance {
         )
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
-
+          const v3_z = await fetch("./credentialAtomicQueryV3-beta.0/circuit_final.zkey")
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => new Uint8Array(buffer));
         const auth_j = await fetch("./AuthV2/verification_key.json")
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
@@ -49,6 +54,11 @@ export class CircuitStorageInstance {
         )
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
+          const v3_j = await fetch("./credentialAtomicQueryV3-beta.0/verification_key.json")
+          .then((response) => response.arrayBuffer())
+          .then((buffer) => new Uint8Array(buffer));
+
+
         console.timeEnd("CircuitStorageInstance.init");
         // this.instanceCS = new CircuitStorage(new InMemoryDataSource());
         console.time("CircuitStorageInstance.saveCircuitData");
@@ -69,6 +79,12 @@ export class CircuitStorageInstance {
           wasm: sig_w,
           provingKey: sig_z,
           verificationKey: sig_j,
+        });
+        await this.instanceCS.saveCircuitData("credentialAtomicQueryV3-beta.0", {
+          circuitId: "credentialAtomicQueryV3-beta.0".toString(),
+          wasm: v3_w,
+          provingKey: v3_z,
+          verificationKey: v3_j,
         });
         console.timeEnd("CircuitStorageInstance.saveCircuitData");
       }
