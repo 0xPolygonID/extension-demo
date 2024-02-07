@@ -9,6 +9,7 @@ let bundleString = fs.readFileSync(bundlePath, 'utf8');
 
 // replace source for Worker
 bundleString = bundleString.replaceAll(`new Worker$1(workerSource)`, 'new Worker$1("./threadman_thread.js")');
+bundleString = bundleString.replaceAll(`new browser_esm_Worker$1(browser_esm_workerSource)`, 'new browser_esm_Worker$1("./threadman_thread.js")');
 
 fs.writeFileSync(bundlePath, bundleString);
 console.log('Bundle replaced code finish', bundlePath);
