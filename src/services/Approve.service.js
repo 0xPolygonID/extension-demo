@@ -77,8 +77,12 @@ export async function proofMethod(msgBytes) {
   console.log(JSON.stringify(newToken));
 
   // generate token
-  const enc = await encryptMsg('029fae8633184dc4df83915d9423da07f1e8be008e7191bba5adc7c517a67a7651',JSON.stringify(response.authResponse));
-  console.log('encrypted msg' + enc);
+  const pubKey = response.authRequest.body.scope[0].params?.pubKey;
+  console.log('pub key ' + pubKey);
+  if (pubKey) {
+    const enc = await encryptMsg(pubKey, JSON.stringify(response.authResponse));
+    console.log('encrypted msg' + enc);
+  }
   return await axios
     .post(`${authRequest.body.callbackUrl}`, newToken, config)
     .then((response) => response)
