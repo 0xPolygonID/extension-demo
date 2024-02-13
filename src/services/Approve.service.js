@@ -1,8 +1,16 @@
 import axios from "axios";
+import init, * as ecies from "ecies-wasm";
 import { ExtensionService } from "./Extension.service";
 import { LocalStorageServices } from './LocalStorage.services';
-import { AuthHandler, FetchHandler, core } from '@0xpolygonid/js-sdk';
+import { AuthHandler, FetchHandler, core, byteEncoder, byteDecoder, PROTOCOL_CONSTANTS } from '@0xpolygonid/js-sdk';
+import { proving } from '@iden3/js-jwz';
 const { DID } = core;
+
+const fromHexString = (hexString) =>
+  Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
+
+const toHexString = (bytes) =>
+  bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
 
 export async function approveMethod(msgBytes) {
   const { packageMgr, proofService, credWallet } = ExtensionService.getExtensionServiceInstance();
@@ -33,7 +41,7 @@ export async function receiveMethod(msgBytes) {
 }
 
 export async function proofMethod(msgBytes) {
-  const { authHandler } = ExtensionService.getExtensionServiceInstance();
+  const { authHandler, packageMgr } = ExtensionService.getExtensionServiceInstance();
   const authRequest = await authHandler.parseAuthorizationRequest(msgBytes);
   const { body } = authRequest;
   const { scope = [] } = body;
@@ -51,8 +59,47 @@ export async function proofMethod(msgBytes) {
     },
     responseType: 'json'
   };
+  console.log(JSON.stringify(response.token));
+
+  const authRespBytes = byteEncoder.encode(JSON.stringify(response.authResponse));
+
+  const packerOpts = {
+          provingMethodAlg: proving.provingMethodGroth16AuthV2Instance.methodAlg
+        };
+
+  const newToken = byteDecoder.decode(
+    await packageMgr.pack(PROTOCOL_CONSTANTS.MediaType.ZKPMessage, authRespBytes, {
+      senderDID: did,
+      ...packerOpts
+    })
+  );
+
+  console.log(JSON.stringify(newToken));
+
+  // generate token
+  const enc = await encryptMsg('029fae8633184dc4df83915d9423da07f1e8be008e7191bba5adc7c517a67a7651',JSON.stringify(response.authResponse));
+  console.log('encrypted msg' + enc);
   return await axios
-    .post(`${authRequest.body.callbackUrl}`, response.token, config)
+    .post(`${authRequest.body.callbackUrl}`, newToken, config)
     .then((response) => response)
     .catch((error) => error.toJSON());
+}
+
+
+async function encryptMsg(pubKey, messsage) {
+  // Initialize the WASM module
+  await init(); 
+
+  //from hex to byte array(uint8array)
+  const pk = fromHexString(pubKey); 
+
+  const utf8EncodeText = new TextEncoder();
+
+  //from string to byteArray(uint8array)
+  const data = utf8EncodeText.encode(messsage); 
+
+  const encrypted = ecies.encrypt(pk, data);
+
+  const encryptedHex = toHexString(encrypted); //uint8array to hex conversion
+  return encryptedHex;
 }
