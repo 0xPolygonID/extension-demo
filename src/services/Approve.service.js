@@ -61,28 +61,35 @@ export async function proofMethod(msgBytes) {
   };
   console.log(JSON.stringify(response.token));
 
+
+  for (let i = 0; i < response.authRequest.body.scope.length; i++) {
+    const pubKey = response.authRequest.body.scope[i].params?.pubKey;
+    if (pubKey) {
+      console.log('pub key found in params - ' + pubKey);
+      const pubSignals = JSON.stringify(response.authResponse.body.scope[i].pub_signals);
+      console.log('pub signals ' + pubSignals);
+      const encryptedPubSignals = await encryptMsg(pubKey, pubSignals);
+      console.log('encrypted pub keys ' + encryptedPubSignals);
+  
+      // replace pub_signals in response with encrypted data:
+      response.authResponse.body.scope[i].pub_signals = [encryptedPubSignals];
+    }
+  }
+
   const authRespBytes = byteEncoder.encode(JSON.stringify(response.authResponse));
 
   const packerOpts = {
-          provingMethodAlg: proving.provingMethodGroth16AuthV2Instance.methodAlg
-        };
-
+    provingMethodAlg: proving.provingMethodGroth16AuthV2Instance.methodAlg
+  };
+  // generate token
   const newToken = byteDecoder.decode(
     await packageMgr.pack(PROTOCOL_CONSTANTS.MediaType.ZKPMessage, authRespBytes, {
-      senderDID: did,
-      ...packerOpts
-    })
+    senderDID: did,
+    ...packerOpts
+   })
   );
-
   console.log(JSON.stringify(newToken));
 
-  // generate token
-  const pubKey = response.authRequest.body.scope[0].params?.pubKey;
-  console.log('pub key ' + pubKey);
-  if (pubKey) {
-    const enc = await encryptMsg(pubKey, JSON.stringify(response.authResponse));
-    console.log('encrypted msg' + enc);
-  }
   return await axios
     .post(`${authRequest.body.callbackUrl}`, newToken, config)
     .then((response) => response)
