@@ -7,6 +7,7 @@ import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
 import { LinearProgress } from "@mui/material";
 import { base64ToBytes } from "@0xpolygonid/js-sdk";
+import { Base64 } from "js-base64";
 
 const RequestType = {
   Auth: "auth",
@@ -103,6 +104,14 @@ export const Auth = () => {
   async function handleClickApprove() {
     setIsReady(false);
     const result = await approveMethod(msgBytes);
+    if (result.data.nextRequest) {
+      console.log('in next request ---> ');
+      const newPayload = Base64.encode(JSON.stringify(result.data.nextRequest));
+      navigate("/");
+      setTimeout(_ => navigate(`/auth?type=base64&payload=${newPayload}`), 2000);
+      return; 
+    }
+
     if (result.code !== "ERR_NETWORK") navigate("/");
     else {
       setError(result.message);
@@ -112,7 +121,15 @@ export const Auth = () => {
   async function handleClickProof() {
     setIsReady(false);
     try {
-      await proofMethod(msgBytes);
+      const result = await proofMethod(msgBytes);
+      console.log('result ' , result);
+      if (result.data.nextRequest) {
+        console.log('in next request ---> ');
+        const newPayload = Base64.encode(JSON.stringify(result.data.nextRequest));
+        navigate("/");
+        setTimeout(_ => navigate(`/auth?type=base64&payload=${newPayload}`), 1000);
+        return; 
+      }
       navigate("/");
     } catch (error) {
       console.log(error.message);
