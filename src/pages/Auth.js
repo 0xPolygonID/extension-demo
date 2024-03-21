@@ -104,9 +104,8 @@ export const Auth = () => {
   async function handleClickApprove() {
     setIsReady(false);
     const result = await approveMethod(msgBytes);
-    if (result.data.nextRequest) {
-      console.log('in next request ---> ');
-      const newPayload = Base64.encode(JSON.stringify(result.data.nextRequest));
+    if (result.data?.type && result.data.type === 'https://iden3-communication.io/authorization/1.0/request') {
+      const newPayload = Base64.encode(JSON.stringify(result.data));
       navigate("/");
       setTimeout(_ => navigate(`/auth?type=base64&payload=${newPayload}`), 2000);
       return; 
@@ -122,10 +121,8 @@ export const Auth = () => {
     setIsReady(false);
     try {
       const result = await proofMethod(msgBytes);
-      console.log('result ' , result);
-      if (result.data.nextRequest) {
-        console.log('in next request ---> ');
-        const newPayload = Base64.encode(JSON.stringify(result.data.nextRequest));
+      if (result.data?.type && result.data.type === 'https://iden3-communication.io/authorization/1.0/request') {
+        const newPayload = Base64.encode(JSON.stringify(result.data));
         navigate("/");
         setTimeout(_ => navigate(`/auth?type=base64&payload=${newPayload}`), 1000);
         return; 
