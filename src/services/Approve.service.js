@@ -10,7 +10,7 @@ export async function approveMethod(msgBytes) {
   let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
   let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
   const authRes = await authHandler.handleAuthorizationRequest(_did, msgBytes);
-  console.log(authRes);
+  console.log(JSON.stringify(authRes));
   const config = {
     headers: {
       'Content-Type': 'text/plain'
