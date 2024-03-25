@@ -239,9 +239,7 @@ export const Auth = () => {
     const offerResponse = await axios.post(issuerURL, proposalReqWithMetaToken, config);
     console.log('offerResponse:');
     console.log(offerResponse);
-
-    const mockCredOffer = `{"id":"c3075ee9-9cdb-49ac-a723-16fc421d84b8","typ":"application/iden3comm-plain-json","type":"https://iden3-communication.io/credentials/1.0/offer","thid":"c3075ee9-9cdb-49ac-a723-16fc421d84b8","body":{"url":"https://dev.polygonid.me/api/v1/agent","credentials":[{"id":"eebb5761-e86c-11ee-9342-0242ac1d0004","description":"KYCAgeCredential"}]},"from":"did:polygonid:polygon:mumbai:2qFGtDk2SyTLJgUx576mn2peqeFtWmhsSvWLoAnom4","to":"did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"}`
-    const offetTokenBytes = byteEncoder.encode(mockCredOffer);
+    const offetTokenBytes = byteEncoder.encode(JSON.stringify(offerResponse.data));
     await receiveMethod(offetTokenBytes);
 
     setError('');
