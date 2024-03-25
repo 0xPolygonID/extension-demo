@@ -31,6 +31,9 @@
 .auth-wrapper .error {
     margin-top: 30px;
 }
+.auth-wrapper .proposal {
+    margin-top: 15px;
+}
 .auth-wrapper .progress{
     position: absolute;
     top: 50%;

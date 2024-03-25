@@ -6,8 +6,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { CredentialRowDetail } from "../components/credentials";
 import { LinearProgress } from "@mui/material";
-import { base64ToBytes, PROTOCOL_CONSTANTS } from "@0xpolygonid/js-sdk";
+import { base64ToBytes, PROTOCOL_CONSTANTS, byteEncoder, byteDecoder } from "@0xpolygonid/js-sdk";
+import { DID } from '@iden3/js-iden3-core';
 import { Base64 } from "js-base64";
+import axios from "axios";
+import { ProvingMethodAlg, Token } from '@iden3/js-jwz';
+import { LocalStorageServices } from '../services/LocalStorage.services';
 
 const RequestType = {
   Auth: "auth",
@@ -47,6 +51,7 @@ export const Auth = () => {
   const [data, setData] = useState(null);
   const [msgBytes, setMsgBytes] = useState(null); // [msgBytes, setMsgBytes
   const [isReady, setIsReady] = useState(true);
+  const [isProposalHidden, setIsProposalHidden] = useState(true);
 
   const detectRequest = (unpackedMessage) => {
     const { type, body } = unpackedMessage;
@@ -117,6 +122,147 @@ export const Auth = () => {
       setIsReady(true);
     }
   }
+  async function handleClickProposalRequest() {
+    setIsReady(false);
+    try {
+    // 1. send proposal-request to Issuer
+    const issuerURL = `http://127.0.0.1:5555`;
+    const verifierURL = 'http://127.0.0.1:4444';
+    const config = {
+      headers: {
+        'Content-Type': 'text/plain'
+      },
+      responseType: 'json'
+    };
+
+    const proposalReq = `{
+      "id": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
+      "thid": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
+      "typ": "application/iden3comm-plain-json",
+      "type": "https://iden3-communication.io/credentials/0.1/proposal-request",
+      "body": {
+        "credentials": [
+          {
+            "id" : 2, 
+            "type": "KYCAgeCredential",
+            "context": "http://test.com"
+          }
+        ],
+        "did_doc": {
+          "@context": ["..."],
+          "id": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx",
+          "services":[
+            {
+               "id": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx/mobile",
+               "type":  "Iden3Mobile"
+            },
+            {
+               "id": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx/push",
+               "type":  "PushNotificationService"
+            }
+          ]
+        }
+      },
+      "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
+      "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
+    }`;
+    const proposalReqToken = await packMsg(proposalReq);    
+    console.log('sending proposal request to Issuer');
+    const response = await axios.post(issuerURL, proposalReqToken, config);
+    console.log('proposal response:');
+    console.log(response);
+    const paymentId = response.data?.body?.proposals[0].paymentId;
+    // 2. Send payment proposal to Verifier
+
+    const paymentProposal = `{
+      "id": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
+      "thid": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
+      "typ": "application/iden3comm-plain-json",
+      "type": "https://iden3-communication.io/credentials/0.1/payment-proposal-request",
+      "body": {
+        "proposals": [
+          {
+            "paymentId": "${paymentId}",
+            "type": "Payment"
+          }
+        ]
+      },
+      "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
+      "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
+    }`;
+    console.log(paymentProposal);
+    const paymentProposalToken = await packMsg(paymentProposal);
+    console.log('sending payment proposal to Verifier');
+    const paymentResponse = await axios.post(`${verifierURL}/api/payment-proposal`, paymentProposalToken, config);
+    console.log('payment proposal: ');
+    console.log(paymentResponse);
+    const signature = paymentResponse.data?.body?.sig;
+    
+    // 3. Proposal req with payrol to Issuer
+    const proposalReqWithMeta = `{
+      "id": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
+      "thid": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
+      "typ": "application/iden3comm-plain-json",
+      "type": "https://iden3-communication.io/credentials/0.1/proposal-request",
+      "body": {
+        "credentials": [
+          {
+            "id" : 2, 
+            "type": "KYCAgeCredential",
+            "context": "http://test.com"
+          }
+        ],
+        "metadata": {
+          "signature": "${signature}"
+        },
+        "did_doc": {
+          "@context": ["..."],
+          "id": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx",
+          "services":[
+            {
+               "id": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx/mobile",
+               "type":  "Iden3Mobile"
+            },
+            {
+               "id": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx/push",
+               "type":  "PushNotificationService"
+            }
+          ]
+        }
+      },
+      "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
+      "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
+    }`;
+
+    const proposalReqWithMetaToken = await packMsg(proposalReqWithMeta);    
+    console.log('sending proposal request with meta to Issuer');
+    const offerResponse = await axios.post(issuerURL, proposalReqWithMetaToken, config);
+    console.log('offerResponse:');
+    console.log(offerResponse);
+
+    const mockCredOffer = `{"id":"c3075ee9-9cdb-49ac-a723-16fc421d84b8","typ":"application/iden3comm-plain-json","type":"https://iden3-communication.io/credentials/1.0/offer","thid":"c3075ee9-9cdb-49ac-a723-16fc421d84b8","body":{"url":"https://dev.polygonid.me/api/v1/agent","credentials":[{"id":"eebb5761-e86c-11ee-9342-0242ac1d0004","description":"KYCAgeCredential"}]},"from":"did:polygonid:polygon:mumbai:2qFGtDk2SyTLJgUx576mn2peqeFtWmhsSvWLoAnom4","to":"did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"}`
+    const offetTokenBytes = byteEncoder.encode(mockCredOffer);
+    await receiveMethod(offetTokenBytes);
+
+    setError('');
+    setIsProposalHidden(true);
+    } 
+    finally {
+      setIsReady(true);
+    }
+  }
+
+  async function packMsg(msg) {
+    let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
+    const { packageMgr } = ExtensionService.getExtensionServiceInstance();
+    const msgBytes = byteEncoder.encode(msg);
+    const b = await packageMgr.pack(PROTOCOL_CONSTANTS.MediaType.ZKPMessage, msgBytes, {
+      senderDID: _did,
+      provingMethodAlg: new ProvingMethodAlg('groth16', 'authV2')
+    });
+    return byteDecoder.decode(b);
+  }
+
   async function handleClickProof() {
     setIsReady(false);
     try {
@@ -131,6 +277,7 @@ export const Auth = () => {
     } catch (error) {
       console.log(error.message);
       setError(error.message);
+      setIsProposalHidden(false);
     } finally {
       setIsReady(true);
     }
@@ -289,6 +436,20 @@ export const Auth = () => {
       <div className={"error"}>
         {error && <p style={{ color: "red" }}>{error}</p>}
       </div>
+      {!isProposalHidden && (
+      <div className={"proposal"}>
+        <Button
+          className={"blue-button"}
+          color="secondary"
+          size="medium"
+          variant="outlined"
+          disabled={!isReady}
+          onClick={handleClickProposalRequest}
+          >
+            Send Proposal Request
+        </Button>
+      </div>
+      )}
     </div>
   );
 };
