@@ -135,6 +135,8 @@ export const Auth = () => {
       responseType: 'json'
     };
 
+    let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
+
     const proposalReq = `{
       "id": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
       "thid": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
@@ -164,7 +166,7 @@ export const Auth = () => {
         }
       },
       "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
-      "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
+      "from": "${_did.string()}"
     }`;
     const proposalReqToken = await packMsg(proposalReq);    
     console.log('POC: sending proposal request to Issuer');
@@ -189,7 +191,7 @@ export const Auth = () => {
         ]
       },
       "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
-      "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
+      "from": "${_did.string()}"
     }`;
     const paymentProposalToken = await packMsg(paymentProposal);
     console.log('POC: sending payment proposal to Verifier');
@@ -232,7 +234,7 @@ export const Auth = () => {
         }
       },
       "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
-      "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
+      "from": _did.string()
     };
 
     const proposalReqWithMetaToken = await packMsg(JSON.stringify(proposalReqWithMeta));    
