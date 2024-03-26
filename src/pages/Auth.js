@@ -199,7 +199,7 @@ export const Auth = () => {
     const signature = paymentResponse.data?.body?.sig;
     
     // 3. Proposal req with payrol to Issuer
-    const proposalReqWithMeta = `{
+    const proposalReqWithMeta = {
       "id": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
       "thid": "36f9e851-d713-4b50-8f8d-8a9382f138ca",
       "typ": "application/iden3comm-plain-json",
@@ -213,7 +213,7 @@ export const Auth = () => {
           }
         ],
         "metadata": {
-          "signature": "${signature}"
+          "signature": signature
         },
         "did_doc": {
           "@context": ["..."],
@@ -232,9 +232,9 @@ export const Auth = () => {
       },
       "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
       "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
-    }`;
+    };
 
-    const proposalReqWithMetaToken = await packMsg(proposalReqWithMeta);    
+    const proposalReqWithMetaToken = await packMsg(JSON.stringify(proposalReqWithMeta));    
     console.log('sending proposal request with meta to Issuer');
     const offerResponse = await axios.post(issuerURL, proposalReqWithMetaToken, config);
     console.log('offerResponse:');
@@ -244,7 +244,9 @@ export const Auth = () => {
 
     setError('');
     setIsProposalHidden(true);
-    } 
+    } catch (error) {
+    console.log(error.message);
+    }
     finally {
       setIsReady(true);
     }
