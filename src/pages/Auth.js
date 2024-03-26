@@ -167,9 +167,10 @@ export const Auth = () => {
       "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
     }`;
     const proposalReqToken = await packMsg(proposalReq);    
-    console.log('sending proposal request to Issuer');
+    console.log('POC: sending proposal request to Issuer');
+    console.log(proposalReq);
     const response = await axios.post(issuerURL, proposalReqToken, config);
-    console.log('proposal response:');
+    console.log('POC: response - proposal response:');
     console.log(response);
     const paymentId = response.data?.body?.proposals[0].paymentId;
     // 2. Send payment proposal to Verifier
@@ -190,13 +191,13 @@ export const Auth = () => {
       "to": "did:polygonid:polygon:mumbai:2qJUZDSCFtpR8QvHyBC4eFm6ab9sJo5rqPbcaeyGC4",
       "from": "did:polygonid:polygon:mumbai:2qEd53PwXM1rQn5851LHiCX3XRRBNf4r79Ao4uRTLx"
     }`;
-    console.log(paymentProposal);
     const paymentProposalToken = await packMsg(paymentProposal);
-    console.log('sending payment proposal to Verifier');
+    console.log('POC: sending payment proposal to Verifier');
+    console.log(paymentProposal);
     const paymentResponse = await axios.post(`${verifierURL}/api/payment-proposal`, paymentProposalToken, config);
-    console.log('payment proposal: ');
+    console.log('POC: response - payment proposal: ');
     console.log(paymentResponse);
-    const signature = paymentResponse.data?.body?.sig;
+    const signature = paymentResponse.data?.body?.signature;
     
     // 3. Proposal req with payrol to Issuer
     const proposalReqWithMeta = {
@@ -235,9 +236,10 @@ export const Auth = () => {
     };
 
     const proposalReqWithMetaToken = await packMsg(JSON.stringify(proposalReqWithMeta));    
-    console.log('sending proposal request with meta to Issuer');
+    console.log('POC: sending proposal request with meta to Issuer');
+    console.log(proposalReqWithMeta)
     const offerResponse = await axios.post(issuerURL, proposalReqWithMetaToken, config);
-    console.log('offerResponse:');
+    console.log('POC: response - offerResponse:');
     console.log(offerResponse);
     const offetTokenBytes = byteEncoder.encode(JSON.stringify(offerResponse.data));
     await receiveMethod(offetTokenBytes);
