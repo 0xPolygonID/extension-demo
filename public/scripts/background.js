@@ -19,15 +19,13 @@ chrome.runtime.onMessage.addListener(async request => {
     const data = request.href.includes('?i_m=')
       ? { type: 'base64', payload: request.href.split('?i_m=')[1] }
       : { type: 'link', payload: decodeURIComponent(request.href.split('?request_uri=')[1]) };
-
+    
     chrome.windows.create({
       url: chrome.runtime.getURL(`index.html#/auth?type=${data.type}&payload=${data.payload}`),
       type: "popup",
       focused: true,
       width: 390,
       height: 600,
-      top: 0,
-      left: request.windowWidth - 390,
     }, () => {
       console.log("Opened popup!")
     })
