@@ -5,7 +5,7 @@ import Popover from '@mui/material/Popover';
 import { NetworkPopover } from '../NetworkPopover';
 
 const options = [
-	{name: 'Polygon mumbai', status: 'active', id: 1},
+	{name: 'Polygon amoy', status: 'active', id: 1}
 ];
 
  export const NetworkDropDown =()=> {
