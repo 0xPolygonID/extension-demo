@@ -21,7 +21,7 @@ export class CircuitStorageInstance {
         const sig_w = await fetch("./credentialAtomicQuerySigV2/circuit.wasm")
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
-          const v3_w = await fetch("./credentialAtomicQueryV3-beta.0/circuit.wasm")
+          const v3_w = await fetch("./credentialAtomicQueryV3-beta.1/circuit.wasm")
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
 
@@ -38,7 +38,7 @@ export class CircuitStorageInstance {
         )
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
-          const v3_z = await fetch("./credentialAtomicQueryV3-beta.0/circuit_final.zkey")
+          const v3_z = await fetch("./credentialAtomicQueryV3-beta.1/circuit_final.zkey")
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
         const auth_j = await fetch("./AuthV2/verification_key.json")
@@ -54,7 +54,7 @@ export class CircuitStorageInstance {
         )
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
-          const v3_j = await fetch("./credentialAtomicQueryV3-beta.0/verification_key.json")
+          const v3_j = await fetch("./credentialAtomicQueryV3-beta.1/verification_key.json")
           .then((response) => response.arrayBuffer())
           .then((buffer) => new Uint8Array(buffer));
 
@@ -80,8 +80,8 @@ export class CircuitStorageInstance {
           provingKey: sig_z,
           verificationKey: sig_j,
         });
-        await this.instanceCS.saveCircuitData("credentialAtomicQueryV3-beta.0", {
-          circuitId: "credentialAtomicQueryV3-beta.0".toString(),
+        await this.instanceCS.saveCircuitData("credentialAtomicQueryV3-beta.1", {
+          circuitId: "credentialAtomicQueryV3-beta.1".toString(),
           wasm: v3_w,
           provingKey: v3_z,
           verificationKey: v3_j,
