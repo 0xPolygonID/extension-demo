@@ -1,6 +1,6 @@
 import { RHS_URL } from "../constants";
 import { ExtensionService } from "./Extension.service";
-import { core, CredentialStatusType } from "@0xpolygonid/js-sdk";
+import { CredentialStatusType } from "@0xpolygonid/js-sdk";
 
 export class IdentityServices {
   static instanceIS;
@@ -11,7 +11,7 @@ export class IdentityServices {
       let identity = await wallet.createIdentity({
         method: 'polygonid',
         blockchain: 'polygon',
-        networkId: 'mumbai',
+        networkId: 'amoy',
         revocationOpts: {
           type: CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
           id: RHS_URL
