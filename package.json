@@ -24,6 +24,7 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "license": "MIT or Apache-2.0",
   "scripts": {
     "start": "react-scripts start",
     "build": "node build && node post-process",
