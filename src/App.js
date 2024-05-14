@@ -5,7 +5,6 @@ import { ExtensionService } from './services/Extension.service';
 import { INIT } from './constants';
 import './App.css';
 import CircularProgress from '@mui/material/CircularProgress';
-import { OpenIdAuthRequest } from './pages/OpenID-Auth-Request';
 
 function App() {
   const [inited, setInited] = useState(false);
