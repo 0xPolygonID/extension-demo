@@ -2,6 +2,10 @@ export * from "./Welcome";
 export * from "./Home";
 export * from "./Auth";
 export * from "./NewAccount";
+export * from './OpenID-Offer';
+export * from './OpenID-Issuer-Info';
+export * from './OpenID-Auth-Request';
+export * from './OpenID-Request';
 // import { core } from "@0xpolygonid/js-sdk";
 // core.registerDidMethodNetwork({
 //   method: core.DidMethod.PolygonId,

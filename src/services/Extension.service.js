@@ -13,6 +13,7 @@ import {
 	PackageManager,
 	EthStateStorage,
 	AuthHandler,
+	NativeProver,
 } from '@0xpolygonid/js-sdk';
 
 
@@ -25,13 +26,14 @@ export class ExtensionService {
 		const { wallet, credWallet, dataStorage } = accountInfo;
 		
 		const circuitStorage = CircuitStorageInstance.getCircuitStorageInstance();
-		
+		const nativeProver = new NativeProver(circuitStorage);
+		const authV2CircuitData = await circuitStorage.loadCircuitData('authV2');
 		let proofService = new ProofService(wallet, credWallet, 
 			circuitStorage, new EthStateStorage(defaultEthConnectionConfig[0]),
 			{ipfsGatewayURL:"https://ipfs.io"});
 		
 		let packageMgr = await ExtensionService.getPackageMgr(
-			await circuitStorage.loadCircuitData('authV2'),
+			authV2CircuitData,
 			proofService.generateAuthV2Inputs.bind(proofService),
 			proofService.verifyState.bind(proofService)
 		);
@@ -46,6 +48,8 @@ export class ExtensionService {
 				wallet,
 				dataStorage,
 				authHandler,
+				authV2CircuitData,
+				nativeProver,
 				status: INIT,
 			}
 		}

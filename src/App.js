@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Home, Welcome, Auth, NewAccount } from './pages';
+import { Home, Welcome, Auth, NewAccount, OpenIdOffer, OpenIdIssuerInfo, OpenIdRequest, OpenIdAuthRequest } from './pages';
 import { Routes, Route } from 'react-router-dom';
 import { ExtensionService } from './services/Extension.service';
 import { INIT } from './constants';
 import './App.css';
 import CircularProgress from '@mui/material/CircularProgress';
+import { OpenIdAuthRequest } from './pages/OpenID-Auth-Request';
 
 function App() {
   const [inited, setInited] = useState(false);
@@ -34,6 +35,10 @@ function App() {
         <Route path={'/'} element={<Home/>}/>
         <Route path={'/welcome'} element={<Welcome/>} />
         <Route path={'/auth'} element={<Auth/>} />
+        <Route path={'/openIdOffer'} element={<OpenIdOffer/>} />
+        <Route path={'/openIdIssuerInfo'} element={<OpenIdIssuerInfo/>} />
+        <Route path={'/openIdAuthRequest'} element={<OpenIdAuthRequest/>} />
+        <Route path={'/openIdRequest'} element={<OpenIdRequest/>} />
         <Route path={'/newAccount'} element={<NewAccount/>} />
       </Routes>) : (<CircularProgress/>)
       }
