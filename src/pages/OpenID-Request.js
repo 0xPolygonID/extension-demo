@@ -9,6 +9,8 @@ import { getDocumentLoader } from '@iden3/js-jsonld-merklization';
 import { DID, toBigEndian } from "@iden3/js-iden3-core";
 import { canonize } from 'jsonld';
 import { hash } from '@iden3/js-jwz';
+import 'react-json-view-lite/dist/index.css';
+import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
 
 const useQuery = (key) => {
   const { search } = useLocation();
@@ -147,7 +149,6 @@ const generateResponse = async (
   req,
   userDID
 ) => {
-  debugger
   const { proofService, nativeProver } = ExtensionService.getExtensionServiceInstance();
   const pd = JSON.parse(decodeBase64url(req.presentation_definition));
   console.log('presentation_definition', pd);
@@ -219,7 +220,7 @@ export const OpenIdRequest = () => {
   return (
     <div className={"auth-wrapper"}>
       <img src={FullLogo} alt={""} />
-      <h2 >
+      <h2>
        OpenID Authorization Request
       </h2>
       <div className="progress-indicator" style={{ height: progressHeight }}>
@@ -227,7 +228,9 @@ export const OpenIdRequest = () => {
       </div>
         {!response && request && <div>
           <h3>Request:</h3>
-          {JSON.stringify(request)}
+          <React.Fragment>
+            <JsonView data={request} shouldExpandNode={allExpanded} style={defaultStyles} />
+          </React.Fragment>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
@@ -252,7 +255,9 @@ export const OpenIdRequest = () => {
         </div>}
         {response && <div>
           <h3>Response:</h3>
-          {JSON.stringify(response)}
+          <React.Fragment>
+            <JsonView data={response} shouldExpandNode={allExpanded} style={defaultStyles} />
+          </React.Fragment>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}

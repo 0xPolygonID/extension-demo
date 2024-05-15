@@ -7,7 +7,8 @@ import { LinearProgress } from "@mui/material";
 import { Token, proving } from '@iden3/js-jwz';
 import { DID } from '@iden3/js-iden3-core';
 import { W3CCredential } from '@0xpolygonid/js-sdk';
-
+import 'react-json-view-lite/dist/index.css';
+import { JsonView, allExpanded, collapseAllNested, defaultStyles } from 'react-json-view-lite';
 
 const useQuery = (key) => {
   const { search } = useLocation();
@@ -171,7 +172,9 @@ export const OpenIdAuthRequest = () => {
       </div>
         {request && !response && <div>
           <h3>Request:</h3>
-          {request}
+          <div className={"break"}>
+            {request}
+          </div>
           <div className={"button-section"}>
           <Button
               className={"blue-button"}
@@ -197,7 +200,9 @@ export const OpenIdAuthRequest = () => {
 
         {!code && response && <div>
           <h3>Response:</h3>
-          {response}
+          <div className={"break"}>
+            {response}
+          </div>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
@@ -223,7 +228,9 @@ export const OpenIdAuthRequest = () => {
 
         {!token && code && <div>
           <h3>code:</h3>
-          {code}
+          <div className={"break"}>
+            {code}
+          </div>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
@@ -249,7 +256,9 @@ export const OpenIdAuthRequest = () => {
 
         {!credential && token && <div>
           <h3>token:</h3>
-          {JSON.stringify(token)}
+          <React.Fragment>
+            <JsonView data={token} shouldExpandNode={allExpanded} style={defaultStyles} />
+          </React.Fragment>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
@@ -275,7 +284,9 @@ export const OpenIdAuthRequest = () => {
 
         {credential  && <div>
           <h3>Credential:</h3>
-          {JSON.stringify(credential)}
+          <React.Fragment>
+            <JsonView data={credential} shouldExpandNode={collapseAllNested} style={defaultStyles} />
+          </React.Fragment>
           <div className={"button-section"}>
             <Button
               className={"blue-button"}

@@ -4,7 +4,8 @@ import FullLogo from "../ui/icons/Primary_ Logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { LinearProgress } from "@mui/material";
-
+import 'react-json-view-lite/dist/index.css';
+import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
 
 const useQuery = (key) => {
   const { search } = useLocation();
@@ -52,7 +53,10 @@ export const OpenIdIssuerInfo = () => {
       </div>
         {data && <div>
           <h3>Info:</h3>
-          {JSON.stringify(data)}
+          <React.Fragment>
+            <JsonView data={data} shouldExpandNode={allExpanded} style={defaultStyles} />
+          </React.Fragment>
+          {/* {JSON.stringify(data)} */}
           <div className={"button-section"}>
             <Button
               className={"blue-button"}

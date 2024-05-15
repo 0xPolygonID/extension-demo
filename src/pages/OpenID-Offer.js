@@ -5,7 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
 import { LinearProgress } from "@mui/material";
 import { decodeBase64url } from "@0xpolygonid/js-sdk";
-
+import 'react-json-view-lite/dist/index.css';
+import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
 
 const useQuery = (key) => {
   const { search } = useLocation();
@@ -52,7 +53,10 @@ export const OpenIdOffer = () => {
         {data && <div>
           <p className={"from"}>From : {data.credential_issuer}</p>
           <h3>Offer:</h3>
-          {JSON.stringify(data)}
+          <React.Fragment>
+            <JsonView data={data} shouldExpandNode={allExpanded} style={defaultStyles} />
+          </React.Fragment>
+          {/* {JSON.stringify(data)} */}
           <div className={"button-section"}>
             <Button
               className={"blue-button"}

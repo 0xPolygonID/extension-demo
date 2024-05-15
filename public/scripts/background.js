@@ -17,7 +17,6 @@ chrome.runtime.onMessage.addListener(async request => {
       await chrome.windows.remove(currentWindow.id);
     }
     if (request.href.includes('?openid-request=')) {
-      debugger
       const payload = request.href.split('?openid-request=')[1];
       chrome.windows.create({
         url: chrome.runtime.getURL(`index.html#/openIdRequest?payload=${payload}`),
