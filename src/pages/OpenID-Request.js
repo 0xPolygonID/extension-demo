@@ -200,10 +200,10 @@ export const OpenIdRequest = () => {
     setResponse(authResponse);
     setIsReady(true);
   }
-  
+
   async function handleClickAuthorize() {
     setIsReady(false);
-    const authResponse = await fetch('http://localhost:4444/api/verifier/verify', {
+    const authResponse = await fetch(request.redirect_uri, {
       method: 'POST',
       body: JSON.stringify(response)
     });

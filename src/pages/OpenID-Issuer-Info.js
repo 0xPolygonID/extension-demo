@@ -30,9 +30,7 @@ export const OpenIdIssuerInfo = () => {
   });
 
   useEffect(() => {
-	    const { dataStorage } = ExtensionService.getExtensionServiceInstance();
-    }, [])
-
+  }, [])
 
   async function handleClickReject() {
     navigate("/");

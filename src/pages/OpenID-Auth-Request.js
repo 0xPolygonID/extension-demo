@@ -29,9 +29,10 @@ export const OpenIdAuthRequest = () => {
   const [credential, setCredential] = useState(null);
   const [isReady, setIsReady] = useState(true);
   
+  let accounts = JSON.parse(localStorage.getItem('accounts'));
   !request && fetch(`${authorizationServer}?response_type=code
     &scope=https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v4.jsonld%23KYCAgeCredential
-    &client_id=s6BhdRkqt3
+    &client_id=${accounts[0].did}
     &code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM
     &code_challenge_method=S256
     &redirect_uri=https%3A%2F%2Fclient.example.org%2Fcb`).then(response => {

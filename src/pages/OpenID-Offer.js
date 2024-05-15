@@ -29,7 +29,6 @@ export const OpenIdOffer = () => {
   console.log('data', data);
 
   useEffect(() => {
-		const { dataStorage } = ExtensionService.getExtensionServiceInstance();
 	}, [])
 
 
