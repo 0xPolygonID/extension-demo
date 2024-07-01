@@ -6,7 +6,7 @@
     "crypto": false
   },
   "dependencies": {
-    "@0xpolygonid/js-sdk": "1.10.0",
+    "@0xpolygonid/js-sdk": "../js-sdk",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@iden3/js-jwz": "1.4.0",

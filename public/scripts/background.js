@@ -16,9 +16,9 @@ chrome.runtime.onMessage.addListener(async request => {
     if (currentWindow) {
       await chrome.windows.remove(currentWindow.id);
     }
-    const data = request.href.includes('?i_m=')
-      ? { type: 'base64', payload: request.href.split('?i_m=')[1] }
-      : { type: 'link', payload: decodeURIComponent(request.href.split('?request_uri=')[1]) };
+    const data = request.href.includes('?i_m=') || request.href.includes('?invintation_message=')
+        ? { type: 'base64', payload: request.href.split('?i_m=')[1] }
+        : { type: 'link', payload: decodeURIComponent(request.href.split('?request_uri=')[1]) };
 
     chrome.windows.create({
       url: chrome.runtime.getURL(`index.html#/auth?type=${data.type}&payload=${data.payload}`),

@@ -56,7 +56,7 @@ export const Auth = () => {
       return RequestType.Proof;
     } else if (type.includes("offer")) {
       return RequestType.CredentialOffer;
-    } else if (type.includes("request")) {
+    } else if (type.includes("request") || type.includes("invitation")) {
       return RequestType.Auth;
     }
   };
@@ -222,7 +222,7 @@ export const Auth = () => {
       )}
       {requestType && requestType === RequestType.Auth && (
         <div>
-          <p className={"reason"}>Reason : {data.body.reason}</p>
+          <p className={"reason"}>Reason : {data.body.reason || data.body.goal}</p>
           <p className={"from"}>From : {data.from}</p>
           <div className={"button-section"}>
             <Button
