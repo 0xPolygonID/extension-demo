@@ -69,6 +69,11 @@ export const Auth = () => {
       let msgBytes;
       if (dataType === "base64") {
         msgBytes = base64ToBytes(payload);
+        const { unpackedMessage } = await packageMgr.unpack(msgBytes);
+        if (unpackedMessage.attachments && unpackedMessage.attachments.length &&
+            unpackedMessage.attachments[0].data.json.type === PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE.CREDENTIAL_OFFER_MESSAGE_TYPE) {
+              navigate(`/offer?type=base64&payload=${payload}`)
+            }
       } else {
         msgBytes = await fetch(decodeURIComponent(payload))
           .then(

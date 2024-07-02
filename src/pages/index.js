@@ -2,6 +2,7 @@ export * from "./Welcome";
 export * from "./Home";
 export * from "./Auth";
 export * from "./NewAccount";
+export * from './Offer';
 // import { core } from "@0xpolygonid/js-sdk";
 // core.registerDidMethodNetwork({
 //   method: core.DidMethod.PolygonId,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, Welcome, Auth, NewAccount } from './pages';
+import { Home, Welcome, Auth, NewAccount, Offer } from './pages';
 import { Routes, Route } from 'react-router-dom';
 import { ExtensionService } from './services/Extension.service';
 import { INIT } from './constants';
@@ -34,6 +34,7 @@ function App() {
         <Route path={'/'} element={<Home/>}/>
         <Route path={'/welcome'} element={<Welcome/>} />
         <Route path={'/auth'} element={<Auth/>} />
+        <Route path={'/offer'} element={<Offer/>} />
         <Route path={'/newAccount'} element={<NewAccount/>} />
       </Routes>) : (<CircularProgress/>)
       }

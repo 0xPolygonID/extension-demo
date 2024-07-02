@@ -42,7 +42,7 @@ export async function approveMethod(msgBytes) {
   const packerOpts = {
     provingMethodAlg: proving.provingMethodGroth16AuthV2Instance.methodAlg
   };
-  
+
   const authProfile = (await wallet.getProfilesByDID(_did)).find(
     (i) => i.verifier === invitationReq.from
   );
