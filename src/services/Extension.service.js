@@ -13,6 +13,7 @@ import {
 	PackageManager,
 	EthStateStorage,
 	AuthHandler,
+	JWSPacker,
 } from '@0xpolygonid/js-sdk';
 
 
@@ -22,7 +23,7 @@ export class ExtensionService {
 	static async init() {
 		await CircuitStorageInstance.init();
 		let accountInfo = await WalletService.createWallet();
-		const { wallet, credWallet, dataStorage } = accountInfo;
+		const { wallet, credWallet, dataStorage, kms } = accountInfo;
 		
 		const circuitStorage = CircuitStorageInstance.getCircuitStorageInstance();
 		
@@ -33,7 +34,8 @@ export class ExtensionService {
 		let packageMgr = await ExtensionService.getPackageMgr(
 			await circuitStorage.loadCircuitData('authV2'),
 			proofService.generateAuthV2Inputs.bind(proofService),
-			proofService.verifyState.bind(proofService)
+			proofService.verifyState.bind(proofService),
+			kms
 		);
 		
 		let authHandler = new AuthHandler(packageMgr, proofService, credWallet);
@@ -47,12 +49,13 @@ export class ExtensionService {
 				dataStorage,
 				authHandler,
 				status: INIT,
+				kms
 			}
 		}
 		console.log('Extension services has been initialized',this.instanceES);
 		return this.instanceES;
 	}
-	static async getPackageMgr(circuitData, prepareFn, stateVerificationFn){
+	static async getPackageMgr(circuitData, prepareFn, stateVerificationFn, kms){
 		const authInputsHandler = new DataPrepareHandlerFunc(prepareFn);
 		const verificationFn = new VerificationHandlerFunc(stateVerificationFn);
 		const mapKey = proving.provingMethodGroth16AuthV2Instance.methodAlg.toString();
@@ -76,7 +79,16 @@ export class ExtensionService {
 		const mgr = new PackageManager();
 		const packer = new ZKPPacker(provingParamMap, verificationParamMap);
 		const plainPacker = new PlainPacker();
-		mgr.registerPackers([packer, plainPacker]);
+
+		const recoveryDIDDocument = {
+			resolve: async (did)  => {
+				const data = await fetch(`http://localhost:8080/1.0/identifiers/${did}`)
+				return data.json();
+			}
+		  };
+		  
+		const jswPacker = new JWSPacker(kms, recoveryDIDDocument);
+		mgr.registerPackers([packer, plainPacker, jswPacker]);
 		
 		return mgr;
 	}

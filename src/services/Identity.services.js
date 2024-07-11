@@ -8,14 +8,15 @@ export class IdentityServices {
     if (!this.instanceIS) {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
 
-      let identity = await wallet.createIdentity({
+      let identity = await wallet.createEthereumBasedIdentity({
         method: 'polygonid',
         blockchain: 'polygon',
         networkId: 'amoy',
         revocationOpts: {
           type: CredentialStatusType.Iden3ReverseSparseMerkleTreeProof,
           id: RHS_URL
-        }
+        },
+        createBjjCredential: false
       });
     
       console.log("!!!!!!!!!!!!!!!!", identity);

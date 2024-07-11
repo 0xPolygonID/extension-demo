@@ -17,15 +17,18 @@ import {
 	RHSResolver,
 	OnChainResolver,
 	IssuerResolver,
-	AgentResolver
+	AgentResolver,
+	Sec256k1Provider
 } from '@0xpolygonid/js-sdk';
 
 export class WalletService {
 	static async createWallet() {
 		const keyStore = new IndexedDBPrivateKeyStore();
 		const bjjProvider = new BjjProvider(KmsKeyType.BabyJubJub, keyStore);
+		const sec256k1Provider = new Sec256k1Provider(KmsKeyType.Secp256k1, keyStore);
 		const kms = new KMS();
 		kms.registerKeyProvider(KmsKeyType.BabyJubJub, bjjProvider);
+		kms.registerKeyProvider(KmsKeyType.Secp256k1, sec256k1Provider);
 		let dataStorage = {
 			credential: new CredentialStorage(
 				new IndexedDBDataSource(CredentialStorage.storageKey)
