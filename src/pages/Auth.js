@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-import { approveMethod, proofMethod, receiveMethod } from "../services";
+import { approveMethod, handleMessage, receiveMethod } from "../services";
 import FullLogo from "../ui/icons/Primary_ Logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
@@ -120,8 +120,8 @@ export const Auth = () => {
   async function handleClickProof() {
     setIsReady(false);
     try {
-      const result = await proofMethod(msgBytes);
-      if (result.data?.type && result.data.type === PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE.AUTHORIZATION_REQUEST_MESSAGE_TYPE) {
+      const result = await handleMessage(msgBytes);
+      if (result?.data?.type && result?.data?.type === PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE.AUTHORIZATION_REQUEST_MESSAGE_TYPE) {
         const newPayload = Base64.encode(JSON.stringify(result.data));
         navigate("/");
         setTimeout(_ => navigate(`/auth?type=base64&payload=${newPayload}`), 1000);
