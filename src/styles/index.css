@@ -41,7 +41,7 @@ p {
   color:white;
 }
 .MuiButton-root.blue-button{
-  background-color: #0087d1;
+  background-color: #10b981;
   border-radius: 20px;
   color:white;
   text-transform: none;
@@ -50,7 +50,7 @@ p {
 .MuiButton-root.blue-button.blue-button-outlined{
   background-color: transparent;
   border-radius: 20px;
-  color: #0087d1;
+  color: #10b981;
   text-transform: none;
 }
 .MuiButton-root.blue-button:hover {

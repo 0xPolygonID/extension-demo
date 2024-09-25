@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
-import { approveMethod, handleMessage, receiveMethod } from "../services";
+import { handleMessage } from "../services";
 import FullLogo from "../ui/icons/Primary_ Logo.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ExtensionService } from "../services/Extension.service";
@@ -14,7 +14,7 @@ const RequestType = {
   CredentialOffer: "credentialOffer",
   Proof: "proof",
 };
-const useQuery = (key) => {
+export const useQuery = (key) => {
   const { search } = useLocation();
   return React.useMemo(
     () => new URLSearchParams(search).get(key),
@@ -103,12 +103,20 @@ export const Auth = () => {
   }
   async function handleClickApprove() {
     setIsReady(false);
-    const result = await approveMethod(msgBytes);
-    if (result.data?.type && result.data.type === PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE.AUTHORIZATION_REQUEST_MESSAGE_TYPE) {
+    const result = await handleMessage(msgBytes);
+    if (
+      result.data?.type &&
+      result.data.type ===
+        PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE
+          .AUTHORIZATION_REQUEST_MESSAGE_TYPE
+    ) {
       const newPayload = Base64.encode(JSON.stringify(result.data));
       navigate("/");
-      setTimeout(_ => navigate(`/auth?type=base64&payload=${newPayload}`), 2000);
-      return; 
+      setTimeout(
+        (_) => navigate(`/auth?type=base64&payload=${newPayload}`),
+        2000
+      );
+      return;
     }
 
     if (result.code !== "ERR_NETWORK") navigate("/");
@@ -121,11 +129,19 @@ export const Auth = () => {
     setIsReady(false);
     try {
       const result = await handleMessage(msgBytes);
-      if (result?.data?.type && result?.data?.type === PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE.AUTHORIZATION_REQUEST_MESSAGE_TYPE) {
+      if (
+        result?.data?.type &&
+        result?.data?.type ===
+          PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE
+            .AUTHORIZATION_REQUEST_MESSAGE_TYPE
+      ) {
         const newPayload = Base64.encode(JSON.stringify(result.data));
         navigate("/");
-        setTimeout(_ => navigate(`/auth?type=base64&payload=${newPayload}`), 1000);
-        return; 
+        setTimeout(
+          (_) => navigate(`/auth?type=base64&payload=${newPayload}`),
+          1000
+        );
+        return;
       }
       navigate("/");
     } catch (error) {
@@ -138,7 +154,7 @@ export const Auth = () => {
 
   async function handleClickReceive() {
     setIsReady(false);
-    let result = await receiveMethod(msgBytes).catch((error) =>
+    let result = await handleMessage(msgBytes).catch((error) =>
       setError(error)
     );
     if (result === "SAVED") navigate("/");
@@ -200,7 +216,6 @@ export const Auth = () => {
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
-              color="primary"
               size="medium"
               variant="outlined"
               disabled={!isReady}
@@ -210,7 +225,6 @@ export const Auth = () => {
             </Button>
             <Button
               className={"blue-button blue-button-outlined"}
-              color="primary"
               size="medium"
               variant="outlined"
               onClick={handleClickReject}
@@ -227,7 +241,6 @@ export const Auth = () => {
           <div className={"button-section"}>
             <Button
               className={"blue-button"}
-              color="primary"
               size="medium"
               variant="outlined"
               disabled={!isReady}
@@ -237,7 +250,6 @@ export const Auth = () => {
             </Button>
             <Button
               className={"blue-button blue-button-outlined"}
-              color="primary"
               size="medium"
               variant="outlined"
               onClick={handleClickReject}

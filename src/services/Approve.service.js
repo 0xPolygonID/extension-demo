@@ -1,7 +1,11 @@
 import axios from "axios";
 import { ExtensionService } from "./Extension.service";
 import { LocalStorageServices } from "./LocalStorage.services";
-import { FetchHandler, core } from "@0xpolygonid/js-sdk";
+import {
+  PROTOCOL_CONSTANTS,
+  core,
+  extractDirectiveFromMessage,
+} from "@0xpolygonid/js-sdk";
 const { DID } = core;
 
 const SESSION_KEY = "ACTIVE_SESSION";
@@ -12,126 +16,78 @@ const config = {
   responseType: "json",
 };
 
-export async function approveMethod(msgBytes) {
-  const { authHandler } = ExtensionService.getExtensionServiceInstance();
+async function handleProposalRequest(unpackedMessage) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(unpackedMessage));
 
-  let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
-  const authRes = await authHandler.handleAuthorizationRequest(_did, msgBytes);
-  console.log(JSON.stringify(authRes));
-  return await axios
-    .post(`${authRes.authRequest.body.callbackUrl}`, authRes.token, config)
+  const { proposalRequestHandler } =
+    ExtensionService.getExtensionServiceInstance();
+  const userDid = DID.parse(LocalStorageServices.getActiveAccountDid());
+
+  const directives = extractDirectiveFromMessage(unpackedMessage);
+  // fetch issuers url and did from registry for example
+  const { token } = await proposalRequestHandler.createProposalRequestPacked({
+    thid: unpackedMessage.thid,
+    sender: userDid,
+    receiver: DID.parse(
+      "did:polygonid:polygon:amoy:2qXnP9aRt8FDsrCmVat5EneH4e2vDq9sgBCtj7QYhh"
+    ),
+    credentials: [],
+    directives,
+  });
+
+  const resp = await axios
+    .post(`http://localhost:4202/api/protocol/handle-message`, token, config)
     .then((response) => response)
     .catch((error) => error.toJSON());
-}
 
-async function markMessagesAsCompleted(threadId) {
-  const { dataStorage } = ExtensionService.getExtensionServiceInstance();
-  const relatedMessages =
-    await dataStorage.messageStorage.getMessagesByThreadId(threadId);
-  const relatedMessage = relatedMessages.find((message) =>
-    Boolean(message.correlationThId)
-  );
-
-  const actualMessages = await dataStorage.messageStorage.getMessagesByThreadId(
-    relatedMessage.correlationThId
-  );
-
-  if (!actualMessages.length) {
-    throw new Error("No related message found");
+  console.log("proposal response received");
+  if (!resp?.data?.body?.proposals?.length) {
+    throw new Error("No proposal response received");
   }
-  const actualMessage = actualMessages[0];
-
-  await dataStorage.messageStorage.updateStatusByThId(threadId, "processed");
-
-  await dataStorage.messageStorage.updateStatusByThId(
-    actualMessage.thid,
-    "processed"
-  );
+  // eslint-disable-next-line no-undef
+  chrome.tabs.create({ url: `${resp.data.body.proposals[0].url}` });
 
   return null;
 }
 
-export async function receiveMethod(msgBytes) {
-  const { packageMgr, credWallet, dataStorage } =
-    ExtensionService.getExtensionServiceInstance();
-  let fetchHandler = new FetchHandler(packageMgr);
-  const { unpackedMessage } = await packageMgr.unpack(msgBytes);
-  const credentials = await fetchHandler.handleCredentialOffer(msgBytes);
-  await credWallet.saveAll(credentials);
-  await dataStorage.messageStorage.save(unpackedMessage.id, {
-    id: unpackedMessage.id,
-    thid: unpackedMessage.thid,
-    createdAt: new Date().toISOString(),
-    status: "pending",
-    type: unpackedMessage.type,
-    jsonString: JSON.stringify(unpackedMessage),
-  });
-  return "SAVED";
-}
-
 export async function handleMessage(msgBytes) {
-  const { authHandler, proposalRequestHandler, dataStorage } =
+  const { authHandler, packageMgr, credWallet, fetchHandler } =
     ExtensionService.getExtensionServiceInstance();
 
   let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
-  const authRequest = await authHandler.parseAuthorizationRequest(msgBytes);
-  try {
-    const authInfo = await authHandler.handleAuthorizationRequest(
-      _did,
-      msgBytes
-    );
-    const resp = await axios
-      .post(`${authInfo.authRequest.body.callbackUrl}`, authInfo.token, config)
-      .then((response) => response)
-      .catch((error) => error.toJSON());
-
-    await markMessagesAsCompleted(localStorage.getItem(SESSION_KEY));
-
-    return resp;
-  } catch (error) {
-    if (!error.message.includes("no credential satisfied query")) {
-      throw error;
-    }
-    console.log("no credential satisfied query, creating proposal request");
-    // fetch issuers from registry for example
-    const { token, request } =
-      await proposalRequestHandler.createProposalRequestPacked({
-        thid: authRequest.thid,
-        sender: _did,
-        receiver: core.DID.parse(
-          "did:polygonid:polygon:amoy:2qXnP9aRt8FDsrCmVat5EneH4e2vDq9sgBCtj7QYhh"
-        ),
-        credentials: [],
-      });
-    console.log(token);
-    localStorage.setItem(SESSION_KEY, request.thid);
-
-    const resp = await axios
-      .post(`http://localhost:4202/api/protocol/handle-message`, token, config)
-      .then((response) => response)
-      .catch((error) => error.toJSON());
-
-    console.log(JSON.stringify(resp.data, null, 2));
-
-    const proposal = resp.data;
-
-    await dataStorage.messageStorage.save(proposal.id, {
-      id: proposal.id,
-      thid: proposal.thid,
-      createdAt: new Date().toISOString(),
-      status: "pending",
-      type: proposal.type,
-      jsonString: JSON.stringify(proposal),
-    });
-
-    console.log("proposal response received");
-    if (resp?.data?.body?.proposals?.length) {
-      // eslint-disable-next-line no-undef
-      chrome.tabs.create({ url: `${resp.data.body.proposals[0].url}` });
-    } else {
-      console.error("no proposals");
+  const { unpackedMessage } = await packageMgr.unpack(msgBytes);
+  switch (unpackedMessage.type) {
+    case PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE
+      .AUTHORIZATION_REQUEST_MESSAGE_TYPE: {
+      try {
+        const authInfo = await authHandler.handleAuthorizationRequest(
+          _did,
+          msgBytes
+        );
+        return await axios
+          .post(
+            `${authInfo.authRequest.body.callbackUrl}`,
+            authInfo.token,
+            config
+          )
+          .then((response) => response)
+          .catch((error) => error.toJSON());
+      } catch (error) {
+        if (!error.message.includes("no credential satisfied query")) {
+          throw error;
+        }
+        await handleProposalRequest(unpackedMessage);
+      }
+      break;
     }
 
-    return null;
+    case PROTOCOL_CONSTANTS.PROTOCOL_MESSAGE_TYPE
+      .CREDENTIAL_OFFER_MESSAGE_TYPE: {
+      const credentials = await fetchHandler.handleCredentialOffer(msgBytes);
+      await credWallet.saveAll(credentials);
+      return "SAVED";
+    }
+    default:
+      throw new Error("Invalid message type");
   }
 }

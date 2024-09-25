@@ -18,7 +18,6 @@ import {
   OnChainResolver,
   IssuerResolver,
   AgentResolver,
-  Iden3MessageStorage,
 } from "@0xpolygonid/js-sdk";
 
 export class WalletService {
@@ -37,9 +36,6 @@ export class WalletService {
       ),
       mt: new MerkleTreeIndexedDBStorage(40),
       states: new EthStateStorage(defaultEthConnectionConfig[0]),
-      messageStorage: new Iden3MessageStorage(
-        new IndexedDBDataSource(Iden3MessageStorage.storageKey)
-      ),
     };
 
     const resolvers = new CredentialStatusResolverRegistry();

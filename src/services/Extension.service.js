@@ -14,6 +14,7 @@ import {
   AuthHandler,
   PROTOCOL_CONSTANTS,
   CredentialProposalHandler,
+  FetchHandler
 } from "@0xpolygonid/js-sdk";
 
 // const { proving } = JWZ;
@@ -40,10 +41,9 @@ export class ExtensionService {
       proofService.verifyState.bind(proofService)
     );
 
-    console.log("dataStorage.messageStorage", dataStorage.messageStorage);
-    const authHandler = new AuthHandler(packageMgr, proofService, {
-      messageStorage: dataStorage.messageStorage,
-    });
+    const authHandler = new AuthHandler(packageMgr, proofService);
+
+    const fetchHandler = new FetchHandler(packageMgr);
 
     const proposalRequestHandler = new CredentialProposalHandler(
       packageMgr,
@@ -54,7 +54,6 @@ export class ExtensionService {
         packerParams: {
           mediaType: PROTOCOL_CONSTANTS.MediaType.PlainMessage,
         },
-        messageStorage: dataStorage.messageStorage,
       }
     );
 
@@ -67,6 +66,7 @@ export class ExtensionService {
         dataStorage,
         authHandler,
         proposalRequestHandler,
+        fetchHandler,
         status: INIT,
       };
     }

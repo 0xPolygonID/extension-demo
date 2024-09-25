@@ -102,7 +102,6 @@ export const Welcome = () => {
 
 				<Button
 					className={'blue-button'}
-					color="primary"
 					size="large"
 					variant="outlined"
 					onClick={handleClickStart}
@@ -116,23 +115,21 @@ export const Welcome = () => {
 					<h3>First time in PolygonID?</h3>
 					<div className={'block-wrap'}>
 						<div className={'section'}>
-							<Icon component={AssignmentReturnedIcon} color={'primary'} />
+							<Icon component={AssignmentReturnedIcon} />
 							<h5>No, I have Secret Recovery Phrase</h5>
 							<p style={{ fontSize: 12 }}>Access your wallet with your Secret Recovery Phrase</p>
 							<Button
 								className={'blue-button'}
-								color="primary"
 								size="small"
 								variant="outlined"
 							>Import an existing wallet</Button>
 						</div>
 						<div className={'section'}>
-							<Icon component={AddIcon} color={'primary'} />
+							<Icon component={AddIcon}  />
 							<h5>Yes, let's set up!</h5>
 							<p style={{ fontSize: 12 }}>This will create a new wallet</p>
 							<Button
 								className={'blue-button'}
-								color="primary"
 								size="small"
 								variant="outlined"
 								onClick={handleClickCreate}
@@ -172,8 +169,7 @@ export const Welcome = () => {
 
 				<Button
 					className={'blue-button'}
-					color="primary"
-					size="small"
+					size="medium"
 					variant="outlined"
 					onClick={handleClickCreatePassword}
 					disabled={error.confirmPassword || error.password}

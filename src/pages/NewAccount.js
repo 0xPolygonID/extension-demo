@@ -48,14 +48,12 @@ export const NewAccount = ()=> {
 		<div className={'button-section'}>
 			<Button
 				className={'blue-button blue-button-outlined'}
-				color="primary"
 				size="large"
 				variant="outlined"
 				onClick={handleClickCancel}
 			>Cancel</Button>
 			<Button
 				className={'blue-button'}
-				color="primary"
 				size="large"
 				variant="outlined"
 				onClick={handleClickCreateAccount}
