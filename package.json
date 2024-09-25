@@ -9,7 +9,7 @@
     "@0xpolygonid/js-sdk": "file:../js-sdk",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
-    "@iden3/js-jwz": "1.4.0",
+    "@iden3/js-jwz": "1.8.0",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.6",
     "@svgr/webpack": "^5.5.0",

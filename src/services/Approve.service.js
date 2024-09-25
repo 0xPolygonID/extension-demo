@@ -4,6 +4,7 @@ import { LocalStorageServices } from "./LocalStorage.services";
 import { FetchHandler, core } from "@0xpolygonid/js-sdk";
 const { DID } = core;
 
+const SESSION_KEY = "ACTIVE_SESSION";
 const config = {
   headers: {
     "Content-Type": "text/plain",
@@ -23,34 +24,53 @@ export async function approveMethod(msgBytes) {
     .catch((error) => error.toJSON());
 }
 
+async function markMessagesAsCompleted(threadId) {
+  const { dataStorage } = ExtensionService.getExtensionServiceInstance();
+  const relatedMessages =
+    await dataStorage.messageStorage.getMessagesByThreadId(threadId);
+  const relatedMessage = relatedMessages.find((message) =>
+    Boolean(message.correlationThId)
+  );
+
+  const actualMessages = await dataStorage.messageStorage.getMessagesByThreadId(
+    relatedMessage.correlationThId
+  );
+
+  if (!actualMessages.length) {
+    throw new Error("No related message found");
+  }
+  const actualMessage = actualMessages[0];
+
+  await dataStorage.messageStorage.updateStatusByThId(threadId, "processed");
+
+  await dataStorage.messageStorage.updateStatusByThId(
+    actualMessage.thid,
+    "processed"
+  );
+
+  return null;
+}
+
 export async function receiveMethod(msgBytes) {
-  const { packageMgr, credWallet } =
+  const { packageMgr, credWallet, dataStorage } =
     ExtensionService.getExtensionServiceInstance();
   let fetchHandler = new FetchHandler(packageMgr);
+  const { unpackedMessage } = await packageMgr.unpack(msgBytes);
   const credentials = await fetchHandler.handleCredentialOffer(msgBytes);
-  console.log(credentials);
   await credWallet.saveAll(credentials);
+  await dataStorage.messageStorage.save(unpackedMessage.id, {
+    id: unpackedMessage.id,
+    thid: unpackedMessage.thid,
+    createdAt: new Date().toISOString(),
+    status: "pending",
+    type: unpackedMessage.type,
+    jsonString: JSON.stringify(unpackedMessage),
+  });
   return "SAVED";
 }
 
-export async function proofMethod(msgBytes) {
-  const { authHandler } = ExtensionService.getExtensionServiceInstance();
-  const authRequest = await authHandler.parseAuthorizationRequest(msgBytes);
-  const { body } = authRequest;
-  const { scope = [] } = body;
-  if (scope.length > 1) {
-    throw new Error("not support 2 scope");
-  }
-  const did = DID.parse(LocalStorageServices.getActiveAccountDid());
-  const response = await authHandler.handleAuthorizationRequest(did, msgBytes);
-  return await axios
-    .post(`${authRequest.body.callbackUrl}`, response.token, config)
-    .then((response) => response)
-    .catch((error) => error.toJSON());
-}
-
 export async function handleMessage(msgBytes) {
-  const { authHandler, proposalRequestHandler } =
+  const { authHandler, proposalRequestHandler, dataStorage } =
     ExtensionService.getExtensionServiceInstance();
 
   let _did = DID.parse(LocalStorageServices.getActiveAccountDid());
@@ -60,33 +80,49 @@ export async function handleMessage(msgBytes) {
       _did,
       msgBytes
     );
-    return await axios
+    const resp = await axios
       .post(`${authInfo.authRequest.body.callbackUrl}`, authInfo.token, config)
       .then((response) => response)
       .catch((error) => error.toJSON());
+
+    await markMessagesAsCompleted(localStorage.getItem(SESSION_KEY));
+
+    return resp;
   } catch (error) {
-    console.log(error, "we in catch");
     if (!error.message.includes("no credential satisfied query")) {
       throw error;
     }
     console.log("no credential satisfied query, creating proposal request");
     // fetch issuers from registry for example
-    const { token } = await proposalRequestHandler.createProposalRequestPacked({
-      thid: authRequest.thid,
-      sender: _did,
-      receiver: core.DID.parse(
-        "did:polygonid:polygon:amoy:2qXnP9aRt8FDsrCmVat5EneH4e2vDq9sgBCtj7QYhh"
-      ),
-      credentials: [],
-    });
+    const { token, request } =
+      await proposalRequestHandler.createProposalRequestPacked({
+        thid: authRequest.thid,
+        sender: _did,
+        receiver: core.DID.parse(
+          "did:polygonid:polygon:amoy:2qXnP9aRt8FDsrCmVat5EneH4e2vDq9sgBCtj7QYhh"
+        ),
+        credentials: [],
+      });
     console.log(token);
+    localStorage.setItem(SESSION_KEY, request.thid);
 
     const resp = await axios
       .post(`http://localhost:4202/api/protocol/handle-message`, token, config)
       .then((response) => response)
       .catch((error) => error.toJSON());
 
-    console.log(JSON.stringify(resp, null, 2));
+    console.log(JSON.stringify(resp.data, null, 2));
+
+    const proposal = resp.data;
+
+    await dataStorage.messageStorage.save(proposal.id, {
+      id: proposal.id,
+      thid: proposal.thid,
+      createdAt: new Date().toISOString(),
+      status: "pending",
+      type: proposal.type,
+      jsonString: JSON.stringify(proposal),
+    });
 
     console.log("proposal response received");
     if (resp?.data?.body?.proposals?.length) {
