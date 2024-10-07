@@ -9,7 +9,7 @@ export class IdentityServices {
       const { wallet } = ExtensionService.getExtensionServiceInstance();
 
       let identity = await wallet.createEthereumBasedIdentity({
-        method: 'polygonid',
+        method: 'iden3',
         blockchain: 'polygon',
         networkId: 'amoy',
         revocationOpts: {

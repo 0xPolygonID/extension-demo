@@ -82,7 +82,7 @@ export class ExtensionService {
 
 		const recoveryDIDDocument = {
 			resolve: async (did)  => {
-				const data = await fetch(`http://localhost:8080/1.0/identifiers/${did}`)
+				const data = await fetch(`https://resolver-dev.privado.id/1.0/identifiers/${did}`)
 				return data.json();
 			}
 		  };

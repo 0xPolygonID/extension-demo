@@ -30,6 +30,7 @@ export async function approveMethod(msgBytes) {
     }
   );
   console.log(JSON.stringify(authRes));
+  console.log(authRes.token);
   const config = {
     headers: {
       'Content-Type': 'text/plain'
